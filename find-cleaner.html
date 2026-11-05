@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Discover cleaning professionals and compare services on FUA LINK.">
+
+    <title>Find a Cleaner | FUA LINK</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/marketplace.css">
+
+    <script defer src="assets/js/cleaner-data.js"></script>
+    <script defer src="assets/js/marketplace.js"></script>
+</head>
+
+<body>
+
+<header class="site-header">
+    <nav class="navbar" aria-label="Main navigation">
+        <a href="index.html" class="logo">
+            <span class="logo-symbol">✦</span>
+            <span class="logo-text">
+                FUA<span>LINK</span>
+                <small>CLEAN SPACES · BRIGHTER LIVES</small>
+            </span>
+        </a>
+
+        <a class="market-home-link" href="index.html">
+            ← Back to Home
+        </a>
+    </nav>
+</header>
+
+<main>
+
+    <section class="market-hero">
+        <div class="market-hero-inner">
+            <p class="market-eyebrow">DISCOVER YOUR CLEANING PROFESSIONAL</p>
+            <h1>Find Your <span>Perfect Cleaner.</span></h1>
+            <p>
+                Explore services, compare professionals and
+                find someone who fits your schedule and location.
+            </p>
+        </div>
+    </section>
+
+    <section class="marketplace-layout"
+             aria-label="Find cleaning professionals">
+
+        <!-- FILTERS -->
+        <aside class="filter-panel">
+            <h2>Filter Cleaners</h2>
+            <p class="filter-subtitle">
+                Narrow your search to what matters.
+            </p>
+
+            <form id="filterForm">
+
+                <label for="locationFilter">Location</label>
+                <input type="search"
+                       id="locationFilter"
+                       placeholder="e.g. Nairobi, Rongai">
+
+                <label for="serviceFilter">Cleaning Service</label>
+                <select id="serviceFilter">
+                    <option value="all">All Services</option>
+                    <option value="home">Home Cleaning</option>
+                    <option value="office">Office Cleaning</option>
+                    <option value="deep">Deep Cleaning</option>
+                    <option value="vehicle">Vehicle Cleaning</option>
+                    <option value="laundry">Laundry Services</option>
+                    <option value="commercial">
+                        Shop & Restaurant Cleaning
+                    </option>
+                    <option value="gardening">
+                        Gardening & Outdoor Care
+                    </option>
+                </select>
+
+                <label for="availabilityFilter">
+                    Current Availability
+                </label>
+                <select id="availabilityFilter">
+                    <option value="all">All Statuses</option>
+                    <option value="available">Available Now</option>
+                    <option value="busy">Busy</option>
+                    <option value="offline">Offline</option>
+                </select>
+
+                <label for="maxPrice">Maximum Starting Price</label>
+                <select id="maxPrice">
+                    <option value="all">Any Price</option>
+                    <option value="1000">Up to KSh 1,000</option>
+                    <option value="2000">Up to KSh 2,000</option>
+                    <option value="3000">Up to KSh 3,000</option>
+                    <option value="5000">Up to KSh 5,000</option>
+                </select>
+
+                <button type="reset" class="reset-filters">
+                    Clear Filters
+                </button>
+
+            </form>
+        </aside>
+
+        <!-- SEARCH RESULTS -->
+        <div class="results-panel">
+
+            <div class="results-heading">
+                <div>
+                    <h2>Explore Professionals</h2>
+                    <p id="resultsCount" role="status"
+                       aria-live="polite">
+                        Loading cleaners...
+                    </p>
+                </div>
+
+                <select id="sortFilter"
+                        aria-label="Sort cleaners">
+                    <option value="default">Recommended Order</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                </select>
+            </div>
+
+            <div class="cleaner-grid" id="cleanerGrid"></div>
+
+            <div class="empty-results" id="emptyResults" hidden>
+                <h3>No matching cleaners</h3>
+                <p>Try changing the location, service or price filters.</p>
+            </div>
+
+            <p class="demo-disclaimer">
+                Demonstration profiles and prices are illustrative.
+                Live listings and availability will be connected
+                to the FUA LINK database.
+            </p>
+
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 FUA LINK. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,456 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="FUA LINK connects customers with independent cleaning professionals. Explore services and request bookings.">
+
+    <title>FUA LINK | Clean Spaces, Brighter Lives</title>
+
+    
+<link rel="stylesheet" href="assets/css/style.css">
+
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/ScrollTrigger.min.js"></script>
+<script defer src="assets/js/main.js"></script>
+
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+    <header class="site-header" id="siteHeader">
+        <nav class="navbar" aria-label="Main navigation">
+
+            <a href="index.html" class="logo">
+                <span class="logo-symbol">✦</span>
+                <span class="logo-text">
+                    FUA<span>LINK</span>
+                    <small>CLEAN SPACES · BRIGHTER LIVES</small>
+                </span>
+            </a>
+
+            <button class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="Open navigation"
+                    aria-controls="navLinks"
+                    aria-expanded="false">
+                ☰
+            </button>
+
+            <div class="nav-links" id="navLinks">
+                <a href="#home">Home</a>
+                <a href="#services">Services</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#about">About</a>
+                <a href="#join">Become a Cleaner</a>
+
+                <a href="#login" class="login-link">Login</a>
+                <a href="#signup" class="nav-signup">
+                    Sign Up
+                </a>
+            </div>
+
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- CINEMATIC HERO -->
+        <section class="hero" id="home">
+
+            <div class="hero-overlay"></div>
+            <div class="hero-glow" aria-hidden="true"></div>
+
+            <div class="hero-container">
+
+                <div class="hero-content">
+
+                    <div class="hero-eyebrow">
+                        <span class="eyebrow-line"></span>
+                        WELCOME TO FUA LINK
+                    </div>
+
+                    <h1>
+                        Professional
+                        <br>
+                        Cleaning Services
+                        <br>
+                        <span>At Your Fingertips.</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        Discover independent cleaning professionals
+                        for your home, office and business.
+                        Explore services, compare profiles,
+                        and enjoy a simpler way to book.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="#search" class="btn btn-primary">
+                            Find a Cleaner
+                            <span aria-hidden="true">↗</span>
+                        </a>
+
+                        <a href="#how-it-works"
+                           class="btn btn-outline">
+                            How It Works
+                        </a>
+                    </div>
+
+                    <div class="hero-note">
+                        <span class="note-icon">✦</span>
+                        Clean spaces. Brighter lives.
+                    </div>
+
+                </div>
+
+                <!-- GLASS SEARCH PANEL -->
+                <div class="search-panel" id="search">
+
+                    <div class="search-heading">
+                        <span class="search-icon">⌕</span>
+                        <div>
+                            <h2>Find Your Perfect Cleaner</h2>
+                            <p>Your clean space starts here.</p>
+                        </div>
+                    </div>
+
+                    <form id="cleanerSearchForm">
+
+                        <label for="location">
+                            Your Location
+                        </label>
+                        <input
+                            type="text"
+                            id="location"
+                            name="location"
+                            placeholder="e.g. Nairobi, Westlands"
+                            required
+                        >
+
+                        <label for="service">
+                            Cleaning Service
+                        </label>
+                       
+<select id="service" name="service" required>
+    <option value="">Select a service</option>
+    <option value="home">Home Cleaning</option>
+    <option value="office">Office Cleaning</option>
+    <option value="deep">Deep Cleaning</option>
+    <option value="vehicle">Vehicle Cleaning</option>
+    <option value="laundry">Laundry Services</option>
+    <option value="commercial">Shop & Restaurant Cleaning</option>
+    <option value="gardening">Gardening & Outdoor Care</option>
+</select>
+
+
+                        <label for="date">
+                            Preferred Date
+                        </label>
+                        <input
+                            type="date"
+                            id="date"
+                            name="date"
+                        >
+
+                        <button type="submit"
+                                class="search-button">
+                            <span aria-hidden="true">⌕</span>
+                            Search Cleaners
+                            <span aria-hidden="true">→</span>
+                        </button>
+
+                        <p class="search-feedback"
+                           id="searchFeedback"
+                           role="status"
+                           aria-live="polite"></p>
+
+                    </form>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FLOATING FEATURE CARDS -->
+        <section class="feature-section"
+                 id="services"
+                 aria-label="Platform benefits">
+
+            <div class="feature-grid">
+
+                <article class="feature-card">
+                    <div class="feature-icon">✧</div>
+                    <h3>Explore Professionals</h3>
+                    <p>
+                        Discover cleaner profiles,
+                        offered services and pricing
+                        in one convenient place.
+                    </p>
+                    <a href="#search">Explore Now →</a>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">⌕</div>
+                    <h3>Effortless Booking</h3>
+                    <p>
+                        Find suitable cleaners and
+                        request your preferred date
+                        and cleaning service.
+                    </p>
+                    <a href="#search">Find a Cleaner →</a>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">♢</div>
+                    <h3>Transparent Profiles</h3>
+                    <p>
+                        Compare service information,
+                        prices and available reviews
+                        before making a decision.
+                    </p>
+                    <a href="#how-it-works">Learn More →</a>
+                </article>
+
+            </div>
+        </section>
+
+        
+<!-- POPULAR CLEANING SERVICES -->
+<section class="services-showcase" id="popular-services">
+    <div class="section-heading">
+        <div>
+            <p class="section-eyebrow">WHAT WE HELP YOU FIND</p>
+            <h2>Discover Cleaning <span>Services</span></h2>
+            <p class="section-intro">
+                From everyday home care to detailed professional
+                cleaning, find the right service for your space.
+            </p>
+        </div>
+        <a href="#search" class="section-link">
+            Find a Cleaner <span aria-hidden="true">↗</span>
+        </a>
+    </div>
+
+    <div class="services-grid">
+
+        <article class="service-card">
+            <div class="service-image">
+                <img src="assets/images/services/home-cleaning.jpg"
+                     alt="Professional home cleaning service"
+                     loading="lazy">
+                <span class="service-number">01</span>
+            </div>
+            <div class="service-info">
+                <h3>Home Cleaning</h3>
+                <p>Fresh, welcoming living spaces for everyday life.</p>
+                <a href="#search" data-service="home">
+                    Explore Service <span aria-hidden="true">↗</span>
+                </a>
+            </div>
+        </article>
+
+        <article class="service-card">
+            <div class="service-image">
+                <img src="assets/images/services/office-cleaning.jpg"
+                     alt="Professional office cleaning service"
+                     loading="lazy">
+                <span class="service-number">02</span>
+            </div>
+            <div class="service-info">
+                <h3>Office Cleaning</h3>
+                <p>Clean, comfortable and productive workplaces.</p>
+                <a href="#search" data-service="office">
+                    Explore Service <span aria-hidden="true">↗</span>
+                </a>
+            </div>
+        </article>
+
+        <article class="service-card">
+            <div class="service-image">
+                <img src="assets/images/services/deep-cleaning.jpg"
+                     alt="Professional thoroughly cleaning a kitchen"
+                     loading="lazy">
+                <span class="service-number">03</span>
+            </div>
+            <div class="service-info">
+                <h3>Deep Cleaning</h3>
+                <p>Detailed attention for spaces needing extra care.</p>
+                <a href="#search" data-service="deep">
+                    Explore Service <span aria-hidden="true">↗</span>
+                </a>
+            </div>
+        </article>
+
+        
+<!-- VEHICLE CLEANING -->
+<article class="service-card">
+    <div class="service-image">
+        <img src="assets/images/services/vehicle-cleaning.jpg"
+             alt="African cleaning professional washing a vehicle"
+             loading="lazy">
+        <span class="service-number">04</span>
+    </div>
+    <div class="service-info">
+        <h3>Vehicle Cleaning</h3>
+        <p>Interior and exterior vehicle care.</p>
+        <a href="#search" data-service="vehicle">
+            Explore Service ↗
+        </a>
+    </div>
+</article>
+
+<!-- LAUNDRY -->
+<article class="service-card">
+    <div class="service-image">
+        <img src="assets/images/services/laundry.jpg"
+             alt="African laundry professional folding clean clothes"
+             loading="lazy">
+        <span class="service-number">05</span>
+    </div>
+    <div class="service-info">
+        <h3>Laundry Services</h3>
+        <p>Washing, drying, ironing and folding.</p>
+        <a href="#search" data-service="laundry">
+            Explore Service ↗
+        </a>
+    </div>
+</article>
+
+<!-- SHOP AND RESTAURANT -->
+<article class="service-card">
+    <div class="service-image">
+        <img src="assets/images/services/commercial-cleaning.jpg"
+             alt="African professional cleaning a restaurant"
+             loading="lazy">
+        <span class="service-number">06</span>
+    </div>
+    <div class="service-info">
+        <h3>Shop & Restaurant Cleaning</h3>
+        <p>Clean, welcoming commercial environments.</p>
+        <a href="#search" data-service="commercial">
+            Explore Service ↗
+        </a>
+    </div>
+</article>
+
+<!-- GARDENING -->
+<article class="service-card">
+    <div class="service-image">
+        <img src="assets/images/services/gardening.jpg"
+             alt="African gardener maintaining a green garden"
+             loading="lazy">
+        <span class="service-number">07</span>
+    </div>
+    <div class="service-info">
+        <h3>Gardening & Outdoor Care</h3>
+        <p>Beautiful gardens and well-maintained compounds.</p>
+        <a href="#search" data-service="gardening">
+            Explore Service ↗
+        </a>
+    </div>
+</article>
+
+
+    </div>
+</section>
+
+<!-- WHY CHOOSE FUA LINK -->
+<section class="why-section" id="how-it-works">
+    <div class="why-container">
+
+        <div class="why-visual">
+            <img src="assets/images/services/home-cleaning.jpg"
+                 alt="Cleaning professional working in a welcoming home"
+                 loading="lazy">
+
+            <div class="why-floating-label">
+                <span class="why-label-icon">✦</span>
+                <div>
+                    <strong>Made for everyday living</strong>
+                    <small>Find cleaning support that fits your needs</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="why-content">
+            <p class="section-eyebrow">THE FUA LINK EXPERIENCE</p>
+
+            <h2>
+                A Cleaner Space,
+                <span>A Better You.</span>
+            </h2>
+
+            <p class="why-intro">
+                We believe finding cleaning services should
+                be straightforward. FUA LINK brings service
+                information and booking requests together
+                in one convenient platform.
+            </p>
+
+            <div class="why-benefits">
+                <div class="why-benefit">
+                    <div class="benefit-icon">⌕</div>
+                    <div>
+                        <h3>Discover With Ease</h3>
+                        <p>Search for cleaners by location and service.</p>
+                    </div>
+                </div>
+
+                <div class="why-benefit">
+                    <div class="benefit-icon">✧</div>
+                    <div>
+                        <h3>Compare Your Options</h3>
+                        <p>Explore profiles, pricing and available reviews.</p>
+                    </div>
+                </div>
+
+                <div class="why-benefit">
+                    <div class="benefit-icon">▣</div>
+                    <div>
+                        <h3>Convenient Booking</h3>
+                        <p>Request a suitable service date and track its status.</p>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#search" class="btn btn-primary why-button">
+                Explore FUA LINK <span aria-hidden="true">↗</span>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- UPCOMING DEVELOPMENT -->
+<section class="placeholder-section" id="about">
+    <p class="section-eyebrow">OUR COMMUNITY</p>
+    <h2>Meet the People Behind Cleaner Spaces.</h2>
+    <p>Cleaner profiles and discovery are coming in the next block.</p>
+</section>
+
+<section class="placeholder-section alternate" id="join">
+    <p class="section-eyebrow">BECOME A CLEANER</p>
+    <h2>Grow Your Cleaning Business With FUA LINK.</h2>
+</section>
+
+
+    </main>
+
+    <footer>
+        <p>© 2026 FUA LINK. All rights reserved.</p>
+    </footer>
+    
+<!-- GSAP animation engine -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+
+<!-- GSAP ScrollTrigger plugin -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/ScrollTrigger.min.js"></script>
+
+
+</body>
+</html>

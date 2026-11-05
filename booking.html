@@ -1,0 +1,1085 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Preview your cleaning service booking with FUA LINK.">
+
+    <title>Book a Cleaner | FUA LINK</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/booking.css">
+
+    <script defer src="assets/js/cleaner-data.js"></script>
+    <script defer src="assets/js/booking-store.js"></script>
+<script defer src="assets/js/booking.js"></script>
+</head>
+
+<body class="booking-page">
+
+    <!-- ==================================
+         BOOKING NAVIGATION
+         ================================== -->
+
+    <header class="booking-header">
+
+        <a href="index.html" class="booking-logo">
+            ✦ FUA<span>LINK</span>
+        </a>
+
+        <nav class="booking-header-links"
+             aria-label="Booking navigation">
+
+            <a href="find-cleaner.html">
+                Find Cleaners
+            </a>
+
+            <a href="customer-dashboard.html">
+                My Dashboard
+            </a>
+
+        </nav>
+
+    </header>
+
+    <main class="booking-main">
+
+        <!-- ==================================
+             PAGE INTRODUCTION
+             ================================== -->
+
+        <section class="booking-intro">
+
+            <a href="find-cleaner.html"
+               class="booking-back-link">
+                ← Back to Cleaners
+            </a>
+
+            <p class="booking-eyebrow">
+                FUA LINK BOOKING EXPERIENCE
+            </p>
+
+            <h1>
+                A cleaner space is
+                <span>just a few steps away.</span>
+            </h1>
+
+            <p>
+                Personalize your cleaning service,
+                choose your preferred schedule and
+                review the details before continuing.
+            </p>
+
+            <span class="booking-demo-label">
+                Interactive Booking Preview
+            </span>
+
+        </section>
+
+        <!-- ==================================
+             BOOKING PROGRESS
+             ================================== -->
+
+        <div class="booking-progress"
+             aria-label="Booking progress">
+
+            <div class="booking-progress-step active"
+                 data-progress="1">
+                <span class="progress-number">1</span>
+                <span>Service</span>
+            </div>
+
+            <div class="booking-progress-line"></div>
+
+            <div class="booking-progress-step"
+                 data-progress="2">
+                <span class="progress-number">2</span>
+                <span>Schedule</span>
+            </div>
+
+            <div class="booking-progress-line"></div>
+
+            <div class="booking-progress-step"
+                 data-progress="3">
+                <span class="progress-number">3</span>
+                <span>Details</span>
+            </div>
+
+            <div class="booking-progress-line"></div>
+
+            <div class="booking-progress-step"
+                 data-progress="4">
+                <span class="progress-number">4</span>
+                <span>Review</span>
+            </div>
+
+        </div>
+
+        <!-- ==================================
+             MAIN BOOKING LAYOUT
+             ================================== -->
+
+        <div class="booking-layout">
+
+            <div class="booking-workspace">
+
+                <form id="bookingForm" novalidate>
+
+                    <!-- ==========================
+                         STEP 1: SELECT SERVICE
+                         ========================== -->
+
+                    <section class="booking-step active"
+                             id="bookingStep1"
+                             data-step="1">
+
+                        <div class="booking-card">
+
+                            <div class="booking-section-heading">
+                                <p class="booking-eyebrow">
+                                    STEP 01
+                                </p>
+
+                                <h2>
+                                    What needs a little sparkle?
+                                </h2>
+
+                                <p>
+                                    Choose the cleaning service
+                                    that best fits your needs.
+                                </p>
+                            </div>
+
+                            <div id="bookingServices"
+                                 class="booking-service-grid">
+                                <!-- JavaScript renders services -->
+                            </div>
+
+                            <p id="serviceError"
+                               class="booking-error"
+                               role="alert"></p>
+
+                            
+<!-- GENERAL CLEANING PREFERENCES -->
+<div class="booking-form-grid">
+    <div class="booking-field">
+        <label for="propertySize">Property / Job Size</label>
+        <select id="propertySize" name="propertySize">
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+        </select>
+    </div>
+    <div class="booking-field">
+        <label for="cleaningFrequency">Cleaning Frequency</label>
+        <select id="cleaningFrequency" name="cleaningFrequency">
+            <option value="once">One-Time</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+        </select>
+    </div>
+</div>
+
+<!-- BLOCK 14 — SERVICE-SPECIFIC REQUIREMENTS -->
+<section id="bookingServiceRequirements" class="booking-requirements" hidden>
+    <div class="booking-requirements-heading">
+        <h3>Customize your cleaning</h3>
+        <p>Choose the requirements that match your space and needs.</p>
+    </div>
+
+    <!-- LAUNDRY -->
+    <div class="booking-requirement-group" data-requirement="laundry" hidden>
+        <label for="laundryItems">Number of standard clothing items</label>
+        <input type="number" id="laundryItems" min="1" max="500" value="10">
+        <label for="laundryBedding">Bedding or duvet items</label>
+        <input type="number" id="laundryBedding" min="0" max="50" value="0">
+        <label for="laundryIroning">Ironing required?</label>
+        <select id="laundryIroning">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+    </div>
+
+    <!-- VEHICLE -->
+    <div class="booking-requirement-group" data-requirement="vehicle" hidden>
+        <label for="vehicleType">Vehicle type</label>
+        <select id="vehicleType">
+            <option value="sedan">Sedan / Hatchback</option>
+            <option value="suv">SUV / Pickup</option>
+            <option value="van">Van / Minibus</option>
+        </select>
+        <label for="vehiclePackage">Cleaning package</label>
+        <select id="vehiclePackage">
+            <option value="exterior">Exterior Wash</option>
+            <option value="interior">Interior Cleaning</option>
+            <option value="full">Full Interior &amp; Exterior</option>
+            <option value="detailing">Detailed Cleaning</option>
+        </select>
+    </div>
+
+    <!-- OFFICE -->
+    <div class="booking-requirement-group" data-requirement="office" hidden>
+        <label for="officeArea">Office area (m²)</label>
+        <input type="number" id="officeArea" min="1" max="10000" value="100">
+        <label for="officeEquipment">Desks and other agreed equipment items</label>
+        <input type="number" id="officeEquipment" min="0" max="1000" value="5">
+    </div>
+
+    <!-- GARDENING -->
+    <div class="booking-requirement-group" data-requirement="gardening" hidden>
+        <label for="gardenTask">Gardening service</label>
+        <select id="gardenTask">
+            <option value="mowing">Lawn Mowing</option>
+            <option value="hedges">Hedge Trimming</option>
+            <option value="weeding">Weeding</option>
+            <option value="landscaping">Landscaping</option>
+        </select>
+        <label for="gardenArea">Garden area (m²)</label>
+        <input type="number" id="gardenArea" min="1" max="10000" value="100">
+    </div>
+
+    <!-- OPTIONAL INTENSIVE CLEANING FOR NON-DEEP SERVICES -->
+    <div class="booking-requirement-group" data-requirement="intensive" hidden>
+        <label class="booking-check-label">
+            <input type="checkbox" id="intensiveCleaning">
+            Request intensive / deep cleaning
+        </label>
+        <p class="booking-requirement-note">
+            Includes more detailed attention to applicable surfaces,
+            corners, fixtures and hard-to-reach areas.
+        </p>
+    </div>
+
+    <!-- BLOCK 21 — ADVANCED DEEP CLEANING CUSTOMIZATION -->
+<div class="deep-customization" data-requirement="deep" hidden>
+
+    <div class="deep-intro">
+        <span class="deep-eyebrow">FUA LINK · SPECIALIZED CLEANING</span>
+        <h3>Customize Your Deep Cleaning</h3>
+        <p>
+            Every space deserves detailed attention.
+            Choose your cleaning sector, the areas to
+            concentrate on, and the level of care required.
+        </p>
+    </div>
+
+    <!-- SECTOR SELECTION -->
+
+    <div class="deep-section">
+        <div class="deep-section-heading">
+            <span class="deep-step-number">01</span>
+            <div>
+                <h4>What type of space needs deep cleaning?</h4>
+                <p>Select the environment we will be cleaning.</p>
+            </div>
+        </div>
+
+        <div class="deep-sector-grid">
+
+            <label class="deep-choice">
+                <input type="radio" name="deepSector"
+                       value="residential" checked>
+                <span class="deep-choice-content">
+                    <span class="deep-choice-icon">🏡</span>
+                    <strong>Residential</strong>
+                    <small>Homes, apartments and houses</small>
+                </span>
+            </label>
+
+            <label class="deep-choice">
+                <input type="radio" name="deepSector"
+                       value="office">
+                <span class="deep-choice-content">
+                    <span class="deep-choice-icon">🏢</span>
+                    <strong>Office & Corporate</strong>
+                    <small>Offices and workspaces</small>
+                </span>
+            </label>
+
+            <label class="deep-choice">
+                <input type="radio" name="deepSector"
+                       value="commercial">
+                <span class="deep-choice-content">
+                    <span class="deep-choice-icon">🏬</span>
+                    <strong>Commercial & Retail</strong>
+                    <small>Shops, salons and showrooms</small>
+                </span>
+            </label>
+
+            <label class="deep-choice">
+                <input type="radio" name="deepSector"
+                       value="hospitality">
+                <span class="deep-choice-content">
+                    <span class="deep-choice-icon">🍽️</span>
+                    <strong>Restaurant & Hospitality</strong>
+                    <small>Kitchens, cafés and dining areas</small>
+                </span>
+            </label>
+
+            <label class="deep-choice">
+                <input type="radio" name="deepSector"
+                       value="vehicle">
+                <span class="deep-choice-content">
+                    <span class="deep-choice-icon">🚙</span>
+                    <strong>Vehicle Detailing</strong>
+                    <small>Interior and exterior detailing</small>
+                </span>
+            </label>
+
+            <label class="deep-choice">
+                <input type="radio" name="deepSector"
+                       value="outdoor">
+                <span class="deep-choice-content">
+                    <span class="deep-choice-icon">🌿</span>
+                    <strong>Outdoor & Compound</strong>
+                    <small>Patios, compounds and outdoor areas</small>
+                </span>
+            </label>
+
+        </div>
+    </div>
+
+    <!-- CLEANING AREAS -->
+
+    <div class="deep-section">
+        <div class="deep-section-heading">
+            <span class="deep-step-number">02</span>
+            <div>
+                <h4>Select areas and detailed cleaning tasks</h4>
+                <p>
+                    Choose as many tasks as you need.
+                    Options change with your selected sector.
+                </p>
+            </div>
+        </div>
+
+        <div id="deepTasksContainer"
+             class="deep-task-groups"></div>
+    </div>
+
+    <!-- SPACE SIZE -->
+
+    <div class="deep-section">
+        <div class="deep-section-heading">
+            <span class="deep-step-number">03</span>
+            <div>
+                <h4>How large is the cleaning job?</h4>
+                <p>Help us estimate the work involved.</p>
+            </div>
+        </div>
+
+        <div class="deep-form-grid">
+
+            <label class="deep-field">
+                <span>Approximate area (m²)</span>
+                <input type="number"
+                       id="deepArea"
+                       min="1"
+                       max="100000"
+                       value="100">
+            </label>
+
+            <label class="deep-field">
+                <span>Number of rooms / zones</span>
+                <input type="number"
+                       id="deepRooms"
+                       min="1"
+                       max="500"
+                       value="3">
+            </label>
+
+            <label class="deep-field">
+                <span>Number of floors</span>
+                <select id="deepFloors">
+                    <option value="1">1 floor</option>
+                    <option value="2">2 floors</option>
+                    <option value="3">3 floors</option>
+                    <option value="4">4 floors</option>
+                    <option value="5">5+ floors</option>
+                </select>
+            </label>
+
+            <label class="deep-field">
+                <span>Current condition</span>
+                <select id="deepCondition">
+                    <option value="standard">
+                        Moderate dirt and buildup
+                    </option>
+                    <option value="heavy">
+                        Heavy dirt and stubborn stains
+                    </option>
+                    <option value="extreme">
+                        Very heavy buildup / neglected space
+                    </option>
+                </select>
+            </label>
+
+        </div>
+
+        <p class="deep-field-hint" id="deepSizeHint">
+            Area and room estimates are most suitable
+            for properties. Vehicle and outdoor jobs
+            may require a tailored quotation.
+        </p>
+    </div>
+
+    <!-- SPECIAL CIRCUMSTANCES -->
+
+    <div class="deep-section">
+        <div class="deep-section-heading">
+            <span class="deep-step-number">04</span>
+            <div>
+                <h4>Does your space require special attention?</h4>
+                <p>Choose any circumstances that apply.</p>
+            </div>
+        </div>
+
+        <div class="deep-options-grid">
+
+            <label class="deep-check">
+                <input type="checkbox"
+                       name="deepExtra"
+                       value="postConstruction">
+                <span>Post-construction dust and residue</span>
+            </label>
+
+            <label class="deep-check">
+                <input type="checkbox"
+                       name="deepExtra"
+                       value="moveInOut">
+                <span>Move-in / move-out deep cleaning</span>
+            </label>
+
+            <label class="deep-check">
+                <input type="checkbox"
+                       name="deepExtra"
+                       value="grease">
+                <span>Heavy grease and oil buildup</span>
+            </label>
+
+            <label class="deep-check">
+                <input type="checkbox"
+                       name="deepExtra"
+                       value="petHair">
+                <span>Pet hair and odour treatment</span>
+            </label>
+
+            <label class="deep-check">
+                <input type="checkbox"
+                       name="deepExtra"
+                       value="highReach">
+                <span>High ceilings / difficult-to-reach areas</span>
+            </label>
+
+            <label class="deep-check">
+                <input type="checkbox"
+                       name="deepExtra"
+                       value="eco">
+                <span>Prefer eco-friendly cleaning products</span>
+            </label>
+
+            <label class="deep-check">
+                <input type="checkbox"
+                       name="deepExtra"
+                       value="equipment">
+                <span>Specialized equipment may be required</span>
+            </label>
+
+            <label class="deep-check">
+                <input type="checkbox"
+                       name="deepExtra"
+                       value="urgent">
+                <span>Priority / urgent scheduling request</span>
+            </label>
+
+        </div>
+    </div>
+
+    <!-- CUSTOMER NOTES -->
+
+    <div class="deep-section">
+        <div class="deep-section-heading">
+            <span class="deep-step-number">05</span>
+            <div>
+                <h4>Additional cleaning instructions</h4>
+                <p>
+                    Describe stains, delicate surfaces,
+                    access restrictions or priorities.
+                </p>
+            </div>
+        </div>
+
+        <textarea id="deepNotes"
+                  rows="4"
+                  maxlength="1500"
+                  placeholder="Example: Deep clean the kitchen cabinets, remove stubborn bathroom stains, and prioritize the balcony..."></textarea>
+    </div>
+
+    <!-- ESTIMATE PREVIEW -->
+
+    <div class="deep-estimate-panel">
+        <div>
+            <span>Estimated Deep Cleaning Total</span>
+            <strong id="deepEstimatedTotal">KSh 0</strong>
+            <small>
+                Illustrative estimate only. Final price
+                requires professional assessment.
+            </small>
+        </div>
+
+        <span class="deep-estimate-icon">✦</span>
+    </div>
+
+</div>
+
+</section> <!-- END OF SERVICE REQUIREMENTS -->
+</div> <!-- END OF STEP 1 BOOKING CARD -->
+</section> <!-- END OF STEP 1 -->
+
+                    <!-- ==========================
+                         STEP 2: SCHEDULE
+                         ========================== -->
+
+                    <section class="booking-step"
+                             id="bookingStep2"
+                             data-step="2"
+                             hidden>
+
+                        <div class="booking-card">
+
+                            <div class="booking-section-heading">
+
+                                <p class="booking-eyebrow">
+                                    STEP 02
+                                </p>
+
+                                <h2>
+                                    When should we come over?
+                                </h2>
+
+                                <p>
+                                    Select your preferred cleaning
+                                    date and starting time.
+                                </p>
+
+                            </div>
+
+                            <div class="booking-field">
+
+                                <label for="bookingDate">
+                                    Preferred Date
+                                </label>
+
+                                <input type="date"
+                                       id="bookingDate"
+                                       name="bookingDate"
+                                       required>
+
+                            </div>
+
+                            <h3>Preferred Time</h3>
+
+                            <div id="bookingTimeSlots"
+                                 class="booking-time-grid">
+
+                                <button type="button"
+                                        class="booking-time-slot"
+                                        data-time="08:00">
+                                    8:00 AM
+                                </button>
+
+                                <button type="button"
+                                        class="booking-time-slot"
+                                        data-time="10:00">
+                                    10:00 AM
+                                </button>
+
+                                <button type="button"
+                                        class="booking-time-slot"
+                                        data-time="12:00">
+                                    12:00 PM
+                                </button>
+
+                                <button type="button"
+                                        class="booking-time-slot"
+                                        data-time="14:00">
+                                    2:00 PM
+                                </button>
+
+                                <button type="button"
+                                        class="booking-time-slot"
+                                        data-time="16:00">
+                                    4:00 PM
+                                </button>
+
+                            </div>
+
+                            <input type="hidden"
+                                   id="selectedBookingTime"
+                                   name="selectedBookingTime">
+
+                            <p id="scheduleError"
+                               class="booking-error"
+                               role="alert"></p>
+
+                            <div class="booking-info-note">
+                                These time slots are examples,
+                                not verified cleaner availability.
+                                The backend will provide actual
+                                available appointments.
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- ==========================
+                         STEP 3: CUSTOMER DETAILS
+                         ========================== -->
+
+                    <section class="booking-step"
+                             id="bookingStep3"
+                             data-step="3"
+                             hidden>
+
+                        <div class="booking-card">
+
+                            <div class="booking-section-heading">
+
+                                <p class="booking-eyebrow">
+                                    STEP 03
+                                </p>
+
+                                <h2>
+                                    Tell us where to find you.
+                                </h2>
+
+                                <p>
+                                    Enter the details that
+                                    would be needed for your
+                                    cleaning appointment.
+                                </p>
+
+                            </div>
+
+                            <div class="booking-form-grid">
+
+                                <div class="booking-field">
+
+                                    <label for="customerName">
+                                        Full Name
+                                    </label>
+
+                                    <input type="text"
+                                           id="customerName"
+                                           name="customerName"
+                                           placeholder="Your full name"
+                                           autocomplete="name"
+                                           required>
+
+                                </div>
+
+                                <div class="booking-field">
+
+                                    <label for="customerPhone">
+                                        Phone Number
+                                    </label>
+
+                                    <input type="tel"
+                                           id="customerPhone"
+                                           name="customerPhone"
+                                           placeholder="e.g. 0712 345 678"
+                                           autocomplete="tel"
+                                           required>
+
+                                </div>
+
+                                <div class="booking-field">
+
+                                    <label for="customerEmail">
+                                        Email Address
+                                    </label>
+
+                                    <input type="email"
+                                           id="customerEmail"
+                                           name="customerEmail"
+                                           placeholder="you@example.com"
+                                           autocomplete="email"
+                                           required>
+
+                                </div>
+
+                                <div class="booking-field">
+
+                                    <label for="bookingCounty">
+                                        County
+                                    </label>
+
+                                    <select id="bookingCounty"
+                                            name="bookingCounty"
+                                            required>
+
+                                        <option value="">
+                                            Select County
+                                        </option>
+
+                                        <option value="Nairobi">
+                                            Nairobi
+                                        </option>
+
+                                        <option value="Kiambu">
+                                            Kiambu
+                                        </option>
+
+                                        <option value="Kajiado">
+                                            Kajiado
+                                        </option>
+
+                                        <option value="Machakos">
+                                            Machakos
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                            <div class="booking-field">
+
+                                <label for="bookingAddress">
+                                    Estate / Area / Address
+                                </label>
+
+                                <input type="text"
+                                       id="bookingAddress"
+                                       name="bookingAddress"
+                                       placeholder="e.g. Westlands, Nairobi"
+                                       autocomplete="street-address"
+                                       required>
+
+                            </div>
+
+                            <div class="booking-field">
+
+                                <label for="bookingInstructions">
+                                    Special Instructions
+                                    <span>(Optional)</span>
+                                </label>
+
+                                <textarea id="bookingInstructions"
+                                          name="bookingInstructions"
+                                          rows="4"
+                                          maxlength="500"
+                                          placeholder="Anything the cleaner should know?"></textarea>
+
+                            </div>
+
+                            <p id="detailsError"
+                               class="booking-error"
+                               role="alert"></p>
+
+                        </div>
+
+                    </section>
+
+                    <!-- ==========================
+                         STEP 4: REVIEW BOOKING
+                         ========================== -->
+
+                    <section class="booking-step"
+                             id="bookingStep4"
+                             data-step="4"
+                             hidden>
+
+                        <div class="booking-card">
+
+                            <div class="booking-section-heading">
+
+                                <p class="booking-eyebrow">
+                                    STEP 04
+                                </p>
+
+                                <h2>
+                                    Everything looking good?
+                                </h2>
+
+                                <p>
+                                    Review your selections before
+                                    viewing your booking preview.
+                                </p>
+
+                            </div>
+
+                            <div id="bookingReview"
+                                 class="booking-review-details">
+                                <!-- JavaScript renders summary -->
+                            </div>
+
+                            <label class="booking-checkbox">
+
+                                <input type="checkbox"
+                                       id="bookingAgreement"
+                                       required>
+
+                                <span>
+                                    I understand this is a
+                                    frontend demonstration
+                                    and no actual booking
+                                    will be created.
+                                </span>
+
+                            </label>
+
+                            <p id="reviewError"
+                               class="booking-error"
+                               role="alert"></p>
+
+                        </div>
+
+                    </section>
+
+                    <!-- ==========================
+                         NAVIGATION CONTROLS
+                         ========================== -->
+
+                    <div class="booking-navigation">
+
+                        <button type="button"
+                                id="bookingPrevious"
+                                class="booking-secondary-button"
+                                hidden>
+                            ← Previous
+                        </button>
+
+                        <button type="button"
+                                id="bookingNext"
+                                class="booking-primary-button">
+                            Continue →
+                        </button>
+
+                        <button type="button"
+                                id="bookingConfirm"
+                                class="booking-primary-button"
+                                hidden>
+                            View Booking Preview ✓
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <!-- ==========================
+                     DEMO CONFIRMATION
+                     ========================== -->
+
+                <section id="bookingSuccess"
+                         class="booking-success"
+                         hidden
+                         aria-live="polite">
+
+                    <div class="booking-success-icon">
+                        ✓
+                    </div>
+
+                    <p class="booking-eyebrow">
+                        DEMONSTRATION COMPLETE
+                    </p>
+
+                    <h2>
+                        Your booking preview is ready!
+                    </h2>
+
+                    
+<p>
+    Your booking preview has been saved in this
+    browser. You can view it in your Customer
+    Dashboard under My Bookings.
+
+    This is a frontend demonstration only.
+    No real appointment has been submitted,
+    no cleaner has been notified and
+    no payment has been made.
+</p>
+
+
+                    <div id="bookingSuccessDetails">
+                        <!-- JavaScript renders preview -->
+                    </div>
+
+                    <div class="booking-success-actions">
+
+                        <a href="find-cleaner.html"
+                           class="booking-secondary-button">
+                            Explore More Cleaners
+                        </a>
+
+                       
+                         <a href="customer-dashboard.html#bookings"
+                             class="booking-primary-button"
+                             id="viewMyBookings">
+                               View My Bookings →
+                        </a>
+                  
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <!-- ==================================
+                 LIVE BOOKING SUMMARY
+                 ================================== -->
+
+            <aside class="booking-sidebar">
+
+                <div class="booking-summary-card">
+
+                    <div class="booking-summary-heading">
+                        <p class="booking-eyebrow">
+                            YOUR BOOKING
+                        </p>
+
+                        <h2>Booking Summary</h2>
+                    </div>
+
+                    <div class="booking-cleaner-card">
+
+                        <img id="bookingCleanerImage"
+                             src="assets/images/cleaners/cleaner-1.jpg"
+                             alt="Selected cleaning professional">
+
+                        <div>
+                            <span>YOUR PROFESSIONAL</span>
+
+                            <h3 id="bookingCleanerName">
+                                Cleaning Professional
+                            </h3>
+
+                            <p id="bookingCleanerLocation">
+                                Nairobi, Westlands
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="booking-summary-items">
+
+                        <div>
+                            <span>Cleaning Service</span>
+                            <strong id="summaryService">
+                                Not selected
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Job Size</span>
+                            <strong id="summarySize">
+                                Small
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Frequency</span>
+                            <strong id="summaryFrequency">
+                                One-Time
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Preferred Date</span>
+                            <strong id="summaryDate">
+                                Not selected
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Preferred Time</span>
+                            <strong id="summaryTime">
+                                Not selected
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <div class="booking-price-breakdown">
+
+                        <div>
+                            <span>Illustrative Base Price</span>
+                            <strong id="summaryBasePrice">
+                                KSh 0
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Estimated Adjustment</span>
+                            <strong id="summaryAdjustment">
+                                KSh 0
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <div class="booking-total">
+
+                        <span>Estimated Total</span>
+
+                        <strong id="summaryTotal">
+                            KSh 0
+                        </strong>
+
+                    </div>
+
+                    <p class="booking-summary-disclaimer">
+                        Estimates only. Not a quotation,
+                        invoice or payment request.
+                    </p>
+
+                </div>
+
+                <div class="booking-help-card">
+
+                    <div class="booking-help-icon">
+                        ✦
+                    </div>
+
+                    <h3>
+                        A fresher space awaits.
+                    </h3>
+
+                    <p>
+                        From homes to offices,
+                        FUA LINK helps you discover
+                        cleaning professionals for
+                        your everyday needs.
+                    </p>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+    <footer class="booking-footer">
+
+        <p>
+            © FUA LINK — Your Cleaning Connection
+        </p>
+
+        <p>
+            Frontend Booking Demonstration
+        </p>
+
+    </footer>
+
+</body>
+</html>

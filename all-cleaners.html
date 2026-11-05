@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>All Cleaning Professionals | FUA LINK</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/all-cleaners.css">
+
+    <script defer src="assets/js/cleaner-data.js"></script>
+    <script defer src="assets/js/all-cleaners.js"></script>
+</head>
+
+<body class="all-cleaners-page">
+
+<header class="directory-header">
+    <a class="directory-logo" href="index.html">
+        ✦ FUA<span>LINK</span>
+    </a>
+
+    <nav aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="find-cleaner.html">Find a Cleaner</a>
+        <a href="all-cleaners.html" aria-current="page">
+            All Professionals
+        </a>
+        <a href="register.html" class="directory-join">
+            Join FUA LINK
+        </a>
+    </nav>
+</header>
+
+<main>
+    <section class="directory-hero">
+        <div class="directory-hero-inner">
+            <span class="directory-eyebrow">
+                ✦ THE FUA LINK COMMUNITY
+            </span>
+
+            <h1>
+                Meet the people
+                <em>behind the clean.</em>
+            </h1>
+
+            <p>
+                Explore cleaning professionals, compare
+                specializations and discover the right
+                person for your home, office or business.
+            </p>
+
+            <div class="directory-hero-stats">
+                <div>
+                    <strong id="totalProfessionals">0</strong>
+                    <span>Demo professionals</span>
+                </div>
+                <div>
+                    <strong>7</strong>
+                    <span>Service categories</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="directory-section">
+        <div class="directory-intro">
+            <div>
+                <span class="directory-eyebrow">
+                    EXPLORE OUR DIRECTORY
+                </span>
+                <h2>Discover your cleaning match</h2>
+                <p>
+                    Search by name or location, explore
+                    specialties and view detailed profiles.
+                </p>
+            </div>
+        </div>
+
+        <form id="directoryFilters"
+              class="directory-filters"
+              role="search">
+
+            <label class="directory-field directory-search">
+                <span>Search professionals</span>
+                <input id="directorySearch"
+                       type="search"
+                       placeholder="Name, location or specialty...">
+            </label>
+
+            <label class="directory-field">
+                <span>Service</span>
+                <select id="directoryService">
+                    <option value="all">All Services</option>
+                </select>
+            </label>
+
+            <label class="directory-field">
+                <span>Availability</span>
+                <select id="directoryAvailability">
+                    <option value="all">All Statuses</option>
+                    <option value="available">Available</option>
+                    <option value="busy">Busy</option>
+                    <option value="offline">Offline</option>
+                </select>
+            </label>
+
+            <label class="directory-field">
+                <span>Sort By</span>
+                <select id="directorySort">
+                    <option value="name">Name A–Z</option>
+                    <option value="experience">
+                        Most Experienced
+                    </option>
+                    <option value="price-low">
+                        Starting Price: Low to High
+                    </option>
+                    <option value="price-high">
+                        Starting Price: High to Low
+                    </option>
+                </select>
+            </label>
+
+            <button type="reset" class="directory-reset">
+                Clear Filters
+            </button>
+        </form>
+
+        <div class="directory-results-bar">
+            <p id="directoryCount" aria-live="polite"></p>
+            <span>Fictional demonstration profiles</span>
+        </div>
+
+        <div id="allCleanersGrid"
+             class="directory-grid">
+        </div>
+
+        <div id="directoryEmpty"
+             class="directory-empty"
+             hidden>
+            <h3>No matching professionals</h3>
+            <p>
+                Try another name, location or service.
+            </p>
+        </div>
+
+        <div class="directory-disclaimer">
+            These profiles, prices, experience details and
+            availability statuses are fictional examples.
+            Profile images are illustrative, not photographs
+            of the named workers. Real professional verification
+            will be added during backend integration.
+        </div>
+    </section>
+</main>
+
+<footer class="directory-footer">
+    <span>✦ FUA LINK</span>
+    <p>Clean spaces. Brighter lives.</p>
+    <a href="index.html">Back to Home</a>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Verification | FUA LINK</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet"
+          href="assets/css/admin-dashboard.css">
+
+    <script defer
+            src="assets/js/admin-dashboard.js"></script>
+</head>
+
+<body class="admin-page">
+
+<div class="admin-layout">
+
+    <aside class="admin-sidebar">
+        <a href="index.html" class="admin-logo">
+            ✦ FUA<span>LINK</span>
+        </a>
+
+        <p class="admin-sidebar-label">ADMINISTRATION</p>
+
+        <nav aria-label="Admin navigation">
+            <a href="#overview" class="active">
+                ◫ Overview
+            </a>
+            <a href="#applications">
+                ◉ Applications
+            </a>
+        </nav>
+
+        <div class="admin-sidebar-footer">
+            <p>Administration Demo</p>
+            <a href="index.html">← Back to Website</a>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+
+        <header class="admin-topbar">
+            <div>
+                <span class="admin-eyebrow">
+                    PROFESSIONAL MANAGEMENT
+                </span>
+                <h1>Verification Center</h1>
+            </div>
+
+            <span class="admin-demo-badge">
+                DEMO MODE
+            </span>
+        </header>
+
+        <section id="overview" class="admin-overview">
+
+            <div class="admin-welcome">
+                <h2>Manage your professional community.</h2>
+                <p>
+                    Review cleaner applications, inspect
+                    professional information and preview
+                    approval decisions.
+                </p>
+            </div>
+
+            <div class="admin-stats">
+
+                <article class="admin-stat">
+                    <span>Pending Review</span>
+                    <strong id="pendingCount">0</strong>
+                </article>
+
+                <article class="admin-stat">
+                    <span>Approved</span>
+                    <strong id="approvedCount">0</strong>
+                </article>
+
+                <article class="admin-stat">
+                    <span>Rejected</span>
+                    <strong id="rejectedCount">0</strong>
+                </article>
+
+                <article class="admin-stat">
+                    <span>Total Applications</span>
+                    <strong id="totalCount">0</strong>
+                </article>
+
+            </div>
+
+        </section>
+
+        <section id="applications"
+                 class="admin-applications">
+
+            <div class="admin-section-heading">
+                <div>
+                    <span class="admin-eyebrow">
+                        APPLICATION REVIEW
+                    </span>
+                    <h2>Professional Applications</h2>
+                    <p>
+                        Review application details before
+                        making a demonstration decision.
+                    </p>
+                </div>
+            </div>
+
+            <div class="admin-filters">
+                <input id="applicationSearch"
+                       type="search"
+                       placeholder="Search name, location or service..."
+                       aria-label="Search applications">
+
+                <select id="applicationStatus"
+                        aria-label="Filter applications">
+                    <option value="all">All Applications</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+
+            <p id="applicationCount"
+               class="admin-result-count"
+               aria-live="polite"></p>
+
+            <div id="applicationsList"
+                 class="applications-list"></div>
+
+            <div id="applicationEmpty"
+                 class="admin-empty"
+                 hidden>
+                No applications match your filters.
+            </div>
+
+        </section>
+
+        <p class="admin-disclaimer">
+            Demonstration only. This page is not protected
+            by administrator authentication. Decisions are
+            saved locally and do not verify identities,
+            activate accounts or publish cleaner profiles.
+        </p>
+
+    </main>
+</div>
+
+<dialog id="applicationDialog"
+        class="application-dialog">
+
+    <div class="application-dialog-header">
+        <h2>Application Review</h2>
+        <button type="button"
+                id="closeApplicationDialog"
+                aria-label="Close application">
+            ✕
+        </button>
+    </div>
+
+    <div id="applicationDetails"></div>
+
+    <div class="application-dialog-actions">
+        <button type="button"
+                id="rejectApplication"
+                class="admin-reject">
+            Reject
+        </button>
+
+        <button type="button"
+                id="approveApplication"
+                class="admin-approve">
+            Approve
+        </button>
+    </div>
+
+    <p id="adminActionMessage"
+       role="status"
+       aria-live="polite"></p>
+
+</dialog>
+
+</body>
+</html>

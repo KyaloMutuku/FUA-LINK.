@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Explore cleaning professionals, services and pricing on FUA LINK.">
+
+    <title>Cleaner Profile | FUA LINK</title>
+
+    <link rel="stylesheet"
+          href="assets/css/style.css">
+
+    <link rel="stylesheet"
+          href="assets/css/cleaner-profile.css">
+
+    <script defer
+            src="assets/js/cleaner-data.js"></script>
+
+    <script defer
+            src="assets/js/cleaner-profile.js"></script>
+</head>
+
+<body>
+
+    <!-- =====================================
+         NAVIGATION
+         ===================================== -->
+
+    <header class="site-header">
+
+        <nav class="navbar">
+
+            <a href="index.html" class="logo">
+
+                <span class="logo-symbol">✦</span>
+
+                <span class="logo-text">
+                    FUA<span>LINK</span>
+                    <small>
+                        CLEAN SPACES · BRIGHTER LIVES
+                    </small>
+                </span>
+
+            </a>
+
+            <a href="find-cleaner.html"
+               class="back-link">
+                ← Find Cleaners
+            </a>
+
+        </nav>
+
+    </header>
+
+    <main>
+
+        <!-- =====================================
+             PROFILE BANNER
+             ===================================== -->
+
+        <section class="profile-banner">
+
+            <div class="profile-banner-inner">
+
+                <p>FUA LINK / CLEANER PROFILE</p>
+
+                <h1>
+                    Meet Your Cleaning Professional
+                </h1>
+
+                <span>
+                    Explore services, pricing and
+                    find the right professional
+                    for your space.
+                </span>
+
+            </div>
+
+        </section>
+
+        <!-- =====================================
+             PROFILE LAYOUT
+             ===================================== -->
+
+        <div class="profile-layout"
+             id="profileLayout"
+             hidden>
+
+            <!-- PROFILE INFORMATION -->
+
+            <div class="profile-main">
+
+                <article class="profile-overview">
+
+                    <img id="cleanerImage"
+                         src=""
+                         alt="Cleaning professional">
+
+                    <div class="profile-overview-content">
+
+                        <p class="profile-eyebrow">
+                            CLEANING PROFESSIONAL
+                        </p>
+
+                        <h2 id="cleanerName"></h2>
+
+                        <p id="cleanerLocation"></p>
+
+                        <span id="cleanerStatus"
+                              class="profile-status">
+                        </span>
+
+                        <p id="cleanerBio"
+                           class="cleaner-bio">
+                        </p>
+
+                    </div>
+
+                </article>
+
+                <!-- SERVICES -->
+
+                <section class="profile-section">
+
+                    <p class="profile-eyebrow">
+                        WHAT I OFFER
+                    </p>
+
+                    <h2>Cleaning Services</h2>
+
+                    <div id="serviceList"
+                         class="profile-service-list">
+                    </div>
+
+                </section>
+
+                <!-- PRICING -->
+
+                <section class="profile-section">
+
+                    <p class="profile-eyebrow">
+                        SERVICE INFORMATION
+                    </p>
+
+                    <h2>Pricing</h2>
+
+                    <div class="pricing-summary">
+
+                        <span>
+                            Illustrative starting price
+                        </span>
+
+                        <strong id="profilePrice"></strong>
+
+                    </div>
+
+                    <p class="pricing-note">
+                        Final pricing will depend on the
+                        selected service and job requirements
+                        once real provider pricing is
+                        integrated.
+                    </p>
+
+                </section>
+
+            </div>
+
+            <!-- =================================
+                 SIMPLIFIED BOOKING PANEL
+                 ================================= -->
+
+            <aside class="booking-panel">
+
+                <div class="booking-header">
+
+                    <p>READY TO GET STARTED?</p>
+
+                    <h2>Book This Cleaner</h2>
+
+                    <span>
+                        Choose your cleaning service,
+                        then continue to schedule your visit.
+                    </span>
+
+                </div>
+
+                <form id="bookingForm">
+
+                    <label for="bookingService">
+                        Select Cleaning Service
+                    </label>
+
+                    <select id="bookingService"
+                            required>
+                        <!-- JavaScript inserts services -->
+                    </select>
+
+                    <div class="booking-price">
+
+                        <span>
+                            Illustrative starting price
+                        </span>
+
+                        <strong id="bookingPrice"></strong>
+
+                    </div>
+
+                    <button type="submit"
+                            class="booking-submit">
+
+                        Continue to Booking ↗
+
+                    </button>
+
+                    <p class="booking-helper-text">
+                        You'll choose your preferred date,
+                        time, service location and any
+                        special instructions on the next page.
+                    </p>
+
+                </form>
+
+            </aside>
+
+        </div>
+
+        <!-- =====================================
+             ERROR MESSAGE
+             ===================================== -->
+
+        <section id="profileError"
+                 class="profile-error"
+                 hidden>
+
+            <h2>Cleaner not found</h2>
+
+            <p>
+                This cleaning professional's profile
+                could not be located.
+            </p>
+
+            <a href="find-cleaner.html">
+                Return to cleaner search
+            </a>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>
+            © 2026 FUA LINK. All rights reserved.
+        </p>
+    </footer>
+
+</body>
+</html>

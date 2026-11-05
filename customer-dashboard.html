@@ -1,0 +1,1005 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Manage your cleaning bookings and discover professionals with FUA LINK.">
+
+    <title>Customer Dashboard | FUA LINK</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <link rel="stylesheet"
+          href="assets/css/customer-dashboard.css">
+
+    <script defer src="assets/js/cleaner-data.js"></script>
+
+    <script defer
+            src="assets/js/customer-dashboard.js"></script>
+</head>
+
+<body class="customer-dashboard-page">
+
+    <div class="customer-dashboard-layout">
+
+        <!-- =====================================
+             LEFT SIDEBAR
+             ===================================== -->
+
+        <aside class="customer-sidebar"
+               id="customerSidebar">
+
+            <a href="index.html"
+               class="customer-sidebar-logo">
+                ✦ FUA<span>LINK</span>
+            </a>
+
+            <div class="customer-sidebar-profile">
+
+                <div class="customer-sidebar-avatar">
+                    JC
+                </div>
+
+                <div>
+                    <strong id="sidebarCustomerName">
+                        Jane Customer
+                    </strong>
+
+                    <small>Customer Account · Demo</small>
+                </div>
+
+            </div>
+
+            <p class="customer-sidebar-label">
+                MAIN MENU
+            </p>
+
+            <nav class="customer-sidebar-nav"
+                 aria-label="Customer dashboard">
+
+                <button type="button"
+                        class="customer-nav-link active"
+                        data-page="overview">
+                    <span>▦</span>
+                    Overview
+                </button>
+
+                <button type="button"
+                        class="customer-nav-link"
+                        data-page="bookings">
+                    <span>▤</span>
+                    My Bookings
+                </button>
+
+                <button type="button"
+                        class="customer-nav-link"
+                        data-page="calendar">
+                    <span>▦</span>
+                    My Calendar
+                </button>
+
+                <button type="button"
+                        class="customer-nav-link"
+                        data-page="saved">
+                    <span>♡</span>
+                    Saved Cleaners
+                </button>
+
+                <button type="button"
+                        class="customer-nav-link"
+                        data-page="profile">
+                    <span>♙</span>
+                    My Profile
+                </button>
+
+            </nav>
+
+            <p class="customer-sidebar-label">
+                EXPLORE
+            </p>
+
+            <nav class="customer-sidebar-nav"
+                 aria-label="Explore FUA LINK">
+
+                <a href="find-cleaner.html"
+                   class="customer-nav-link">
+                    <span>⌕</span>
+                    Find a Cleaner
+                </a>
+
+                <a href="index.html"
+                   class="customer-nav-link">
+                    <span>⌂</span>
+                    Back to Home
+                </a>
+
+            </nav>
+
+            <div class="customer-sidebar-bottom">
+
+                <div class="customer-sidebar-support">
+
+                    <span class="support-symbol">✦</span>
+
+                    <h3>Need a fresh start?</h3>
+
+                    <p>
+                        Discover professionals ready
+                        to transform your space.
+                    </p>
+
+                    <a href="find-cleaner.html">
+                        Explore Cleaners →
+                    </a>
+
+                </div>
+
+                <a href="login.html"
+                   class="customer-sidebar-logout">
+                    ↪ Exit Dashboard
+                </a>
+
+            </div>
+
+        </aside>
+
+        <!-- =====================================
+             MAIN DASHBOARD
+             ===================================== -->
+
+        <div class="customer-main-shell">
+
+            <!-- TOP BAR -->
+
+            <header class="customer-topbar">
+
+                <div class="customer-topbar-left">
+
+                    <button type="button"
+                            id="customerMenuToggle"
+                            class="customer-menu-toggle"
+                            aria-label="Toggle navigation"
+                            aria-expanded="false"
+                            aria-controls="customerSidebar">
+                        ☰
+                    </button>
+
+                    <div>
+                        <span class="customer-topbar-caption">
+                            YOUR PERSONAL SPACE
+                        </span>
+
+                        <h2 id="customerPageTitle">
+                            Dashboard Overview
+                        </h2>
+                    </div>
+
+                </div>
+
+                
+<div class="customer-topbar-right">
+
+    <a href="find-cleaner.html"
+       class="customer-topbar-book">
+        + Book a Cleaner
+    </a>
+
+    <div class="customer-topbar-avatar">
+        JC
+    </div>
+
+</div>
+
+
+            </header>
+
+            <main class="customer-content">
+
+                <!-- =================================
+                     PAGE 1 — OVERVIEW
+                     ================================= -->
+
+                <section class="customer-page"
+                         id="customerPage-overview">
+
+                    <!-- WELCOME BANNER -->
+
+                    <div class="customer-welcome">
+
+                        <div class="customer-welcome-content">
+
+                            <span class="customer-welcome-tag">
+                                ✦ YOUR CLEANING COMPANION
+                            </span>
+
+                            <h1>
+                                Welcome home,
+                                <span id="welcomeCustomerName">
+                                    Jane!
+                                </span>
+                            </h1>
+
+                            <p>
+                                A cleaner space, a lighter mind.
+                                Discover trusted cleaning
+                                professionals and keep your
+                                cleaning plans organized.
+                            </p>
+
+                            <a href="find-cleaner.html"
+                               class="customer-welcome-button">
+                                Find Your Next Cleaner →
+                            </a>
+
+                        </div>
+
+                        <div class="customer-welcome-decoration"
+                             aria-hidden="true">
+                            ✧
+                        </div>
+
+                    </div>
+
+                    <!-- STATISTICS -->
+
+                    <div class="customer-section-title">
+
+                        <div>
+                            <p class="customer-eyebrow">
+                                AT A GLANCE
+                            </p>
+
+                            <h2>Your Cleaning Journey</h2>
+                        </div>
+
+                        <span class="customer-section-caption">
+                            Sample activity
+                        </span>
+
+                    </div>
+
+                    <div class="customer-stats-grid">
+
+                        <article class="customer-stat-card mint">
+
+                            <div class="customer-stat-top">
+                                <span class="customer-stat-icon">
+                                    ▤
+                                </span>
+
+                                <span class="customer-stat-trend">
+                                    BOOKINGS
+                                </span>
+                            </div>
+
+                            <strong id="customerStatTotal">
+                                0
+                            </strong>
+
+                            <h3>Total Bookings</h3>
+
+                            <p>
+                                Your cleaning appointments
+                            </p>
+
+                        </article>
+
+                        <article class="customer-stat-card blue">
+
+                            <div class="customer-stat-top">
+                                <span class="customer-stat-icon">
+                                    ◷
+                                </span>
+
+                                <span class="customer-stat-trend">
+                                    UPCOMING
+                                </span>
+                            </div>
+
+                            <strong id="customerStatUpcoming">
+                                0
+                            </strong>
+
+                            <h3>Upcoming Visits</h3>
+
+                            <p>
+                                Cleaning sessions ahead
+                            </p>
+
+                        </article>
+
+                        <article class="customer-stat-card peach">
+
+                            <div class="customer-stat-top">
+                                <span class="customer-stat-icon">
+                                    ✓
+                                </span>
+
+                                <span class="customer-stat-trend">
+                                    COMPLETED
+                                </span>
+                            </div>
+
+                            <strong id="customerStatCompleted">
+                                0
+                            </strong>
+
+                            <h3>Completed Cleans</h3>
+
+                            <p>
+                                Spaces refreshed so far
+                            </p>
+
+                        </article>
+
+                        <article class="customer-stat-card lavender">
+
+                            <div class="customer-stat-top">
+                                <span class="customer-stat-icon">
+                                    ♡
+                                </span>
+
+                                <span class="customer-stat-trend">
+                                    FAVORITES
+                                </span>
+                            </div>
+
+                            <strong id="customerStatSaved">
+                                0
+                            </strong>
+
+                            <h3>Saved Cleaners</h3>
+
+                            <p>
+                                Professionals you like
+                            </p>
+
+                        </article>
+
+                    </div>
+
+                    <!-- RECENT BOOKINGS + CALENDAR -->
+
+                    <div class="customer-overview-grid">
+
+                        <section class="customer-panel">
+
+                            <div class="customer-panel-heading">
+
+                                <div>
+                                    <p class="customer-eyebrow">
+                                        YOUR ACTIVITY
+                                    </p>
+
+                                    <h2>Recent Bookings</h2>
+                                </div>
+
+                                <button type="button"
+                                        class="customer-text-button"
+                                        data-page="bookings">
+                                    View All →
+                                </button>
+
+                            </div>
+
+                            <div id="customerRecentBookings"
+                                 class="customer-bookings-list">
+                                <!-- JavaScript renders bookings -->
+                            </div>
+
+                        </section>
+
+                        <section class="customer-panel">
+
+                            <div class="customer-panel-heading">
+
+                                <div>
+                                    <p class="customer-eyebrow">
+                                        PLAN AHEAD
+                                    </p>
+
+                                    <h2>Cleaning Calendar</h2>
+                                </div>
+
+                            </div>
+
+                            <div class="customer-mini-calendar-header">
+
+                                <strong id="customerMiniMonth">
+                                    Month Year
+                                </strong>
+
+                                <button type="button"
+                                        class="customer-text-button"
+                                        data-page="calendar">
+                                    Open →
+                                </button>
+
+                            </div>
+
+                            <div id="customerMiniCalendar"
+                                 class="customer-mini-calendar">
+                                <!-- JavaScript renders calendar -->
+                            </div>
+
+                            <div class="customer-calendar-legend">
+
+                                <span>
+                                    <i class="calendar-dot booking-dot"></i>
+                                    Booking
+                                </span>
+
+                                <span>
+                                    <i class="calendar-dot today-dot"></i>
+                                    Today
+                                </span>
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+                    <!-- QUICK ACTIONS -->
+
+                    <div class="customer-section-title">
+
+                        <div>
+                            <p class="customer-eyebrow">
+                                QUICK ACCESS
+                            </p>
+
+                            <h2>What Would You Like to Do?</h2>
+                        </div>
+
+                    </div>
+
+                    <div class="customer-quick-grid">
+
+                        <a href="find-cleaner.html"
+                           class="customer-quick-card">
+
+                            <span class="customer-quick-icon">
+                                ✨
+                            </span>
+
+                            <h3>Book a Cleaning</h3>
+
+                            <p>
+                                Find the right professional
+                                for your space.
+                            </p>
+
+                            <span class="customer-quick-arrow">
+                                ↗
+                            </span>
+
+                        </a>
+
+                        <button type="button"
+                                class="customer-quick-card"
+                                data-page="bookings">
+
+                            <span class="customer-quick-icon">
+                                📋
+                            </span>
+
+                            <h3>Manage Bookings</h3>
+
+                            <p>
+                                Review your scheduled and
+                                previous appointments.
+                            </p>
+
+                            <span class="customer-quick-arrow">
+                                ↗
+                            </span>
+
+                        </button>
+
+                        <button type="button"
+                                class="customer-quick-card"
+                                data-page="saved">
+
+                            <span class="customer-quick-icon">
+                                ♡
+                            </span>
+
+                            <h3>Saved Professionals</h3>
+
+                            <p>
+                                Revisit your favorite
+                                cleaning specialists.
+                            </p>
+
+                            <span class="customer-quick-arrow">
+                                ↗
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+                <!-- =================================
+                     PAGE 2 — MY BOOKINGS
+                     ================================= -->
+
+                <section class="customer-page"
+                         id="customerPage-bookings"
+                         hidden>
+
+                    <div class="customer-page-intro">
+
+                        <p class="customer-eyebrow">
+                            BOOKING MANAGEMENT
+                        </p>
+
+                        <h1>My Cleaning Bookings</h1>
+
+                        <p>
+                            Keep track of your sample
+                            cleaning appointments in
+                            one organized place.
+                        </p>
+
+                    </div>
+
+                    <div class="customer-panel">
+
+                        <div class="customer-panel-heading">
+
+                            <div>
+                                <h2>Booking History</h2>
+
+                                <p>
+                                    Filter appointments by status.
+                                </p>
+                            </div>
+
+                            <select id="customerBookingFilter"
+                                    class="customer-filter-select"
+                                    aria-label="Filter bookings">
+
+                                <option value="all">
+                                    All Bookings
+                                </option>
+
+                                
+                                 <option value="preview">
+                                   Saved Previews
+                                 </option>
+
+
+                                <option value="pending">
+                                    Pending
+                                </option>
+
+                                <option value="confirmed">
+                                    Confirmed
+                                </option>
+
+                                <option value="completed">
+                                    Completed
+                                </option>
+
+                                <option value="cancelled">
+                                    Cancelled
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div id="customerAllBookings"
+                             class="customer-bookings-list">
+                            <!-- JavaScript renders bookings -->
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- =================================
+                     PAGE 3 — CALENDAR
+                     ================================= -->
+
+                <section class="customer-page"
+                         id="customerPage-calendar"
+                         hidden>
+
+                    <div class="customer-page-intro">
+
+                        <p class="customer-eyebrow">
+                            YOUR SCHEDULE
+                        </p>
+
+                        <h1>Cleaning Calendar</h1>
+
+                        <p>
+                            See your upcoming sample
+                            cleaning appointments.
+                        </p>
+
+                    </div>
+
+                    <div class="customer-panel">
+
+                        <div class="customer-calendar-heading">
+
+                            <h2 id="customerCalendarMonth">
+                                Month Year
+                            </h2>
+
+                            <div class="customer-calendar-controls">
+
+                                <button type="button"
+                                        id="customerPrevMonth"
+                                        aria-label="Previous month">
+                                    ←
+                                </button>
+
+                                <button type="button"
+                                        id="customerNextMonth"
+                                        aria-label="Next month">
+                                    →
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div class="customer-calendar-weekdays">
+
+                            <span>Sun</span>
+                            <span>Mon</span>
+                            <span>Tue</span>
+                            <span>Wed</span>
+                            <span>Thu</span>
+                            <span>Fri</span>
+                            <span>Sat</span>
+
+                        </div>
+
+                        <div id="customerFullCalendar"
+                             class="customer-full-calendar">
+                            <!-- JavaScript renders dates -->
+                        </div>
+
+                        <div class="customer-calendar-legend">
+
+                            <span>
+                                <i class="calendar-dot booking-dot"></i>
+                                Booking
+                            </span>
+
+                            <span>
+                                <i class="calendar-dot today-dot"></i>
+                                Today
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="customer-panel">
+
+                        <div class="customer-panel-heading">
+                            <h2>Appointments on Selected Date</h2>
+                        </div>
+
+                        <p id="customerSelectedDateLabel"
+                           class="customer-selected-date">
+                            Select a date
+                        </p>
+
+                        <div id="customerDateBookings">
+                            <!-- JavaScript renders appointments -->
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- =================================
+                     PAGE 4 — SAVED CLEANERS
+                     ================================= -->
+
+                <section class="customer-page"
+                         id="customerPage-saved"
+                         hidden>
+
+                    <div class="customer-page-intro">
+
+                        <p class="customer-eyebrow">
+                            YOUR FAVORITES
+                        </p>
+
+                        <h1>Saved Cleaning Professionals</h1>
+
+                        <p>
+                            Keep your preferred cleaning
+                            professionals close for your
+                            next appointment.
+                        </p>
+
+                    </div>
+
+                    <div id="customerSavedCleaners"
+                         class="customer-saved-grid">
+                        <!-- JavaScript renders saved cleaners -->
+                    </div>
+
+                    <div class="customer-panel customer-explore-panel">
+
+                        <h2>
+                            Looking for someone new?
+                        </h2>
+
+                        <p>
+                            Explore cleaning professionals
+                            across different services
+                            and locations.
+                        </p>
+
+                        <a href="find-cleaner.html"
+                           class="customer-primary-button">
+                            Browse Cleaners →
+                        </a>
+
+                    </div>
+
+                </section>
+
+                <!-- =================================
+                     PAGE 5 — MY PROFILE
+                     ================================= -->
+
+                <section class="customer-page"
+                         id="customerPage-profile"
+                         hidden>
+
+                    <div class="customer-page-intro">
+
+                        <p class="customer-eyebrow">
+                            PERSONAL DETAILS
+                        </p>
+
+                        <h1>My Customer Profile</h1>
+
+                        <p>
+                            Preview and update your
+                            customer information.
+                        </p>
+
+                    </div>
+
+                    <div class="customer-panel">
+
+                        <div class="customer-profile-heading">
+
+                            <div class="customer-profile-avatar">
+                                JC
+                            </div>
+
+                            <div>
+                                <h2 id="customerProfileHeading">
+                                    Jane Customer
+                                </h2>
+
+                                <p>
+                                    FUA LINK Customer · Demo
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <form id="customerProfileForm">
+
+                            <div class="customer-form-grid">
+
+                                <div class="customer-form-field">
+
+                                    <label for="customerProfileName">
+                                        Full Name
+                                    </label>
+
+                                    <input type="text"
+                                           id="customerProfileName"
+                                           value="Jane Customer"
+                                           required>
+
+                                </div>
+
+                                <div class="customer-form-field">
+
+                                    <label for="customerProfileEmail">
+                                        Email Address
+                                    </label>
+
+                                    <input type="email"
+                                           id="customerProfileEmail"
+                                           value="jane@example.com"
+                                           required>
+
+                                </div>
+
+                                <div class="customer-form-field">
+
+                                    <label for="customerProfilePhone">
+                                        Phone Number
+                                    </label>
+
+                                    <input type="tel"
+                                           id="customerProfilePhone"
+                                           value="0712345678"
+                                           required>
+
+                                </div>
+
+                                <div class="customer-form-field">
+
+                                    <label for="customerProfileLocation">
+                                        Preferred Location
+                                    </label>
+
+                                    <input type="text"
+                                           id="customerProfileLocation"
+                                           value="Westlands, Nairobi"
+                                           required>
+
+                                </div>
+
+                            </div>
+
+                            <button type="submit"
+                                    class="customer-primary-button">
+                                Preview Profile Changes
+                            </button>
+
+                            <p id="customerProfileMessage"
+                               class="customer-form-message"
+                               role="status"></p>
+
+                        </form>
+
+                    </div>
+
+                </section>
+
+            </main>
+
+            <!-- =================================
+                 FOOTER
+                 ================================= -->
+
+            <footer class="customer-dashboard-footer">
+
+                <span>
+                    © FUA LINK — Your Cleaning Connection
+                </span>
+
+                <span>
+                    Customer Dashboard · Frontend Preview
+                </span>
+
+            </footer>
+
+        </div>
+
+    </div>
+
+    
+<!-- ==========================================
+     BLOCK 13 — BOOKING MANAGEMENT MODAL
+     ========================================== -->
+
+<div id="customerBookingModal"
+     class="customer-booking-modal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="customerModalTitle"
+     hidden>
+
+    <div class="customer-modal-content">
+
+        <div class="customer-modal-header">
+            <div>
+                <p class="customer-eyebrow">
+                    BOOKING MANAGEMENT
+                </p>
+                <h2 id="customerModalTitle">
+                    Booking Details
+                </h2>
+            </div>
+
+            <button type="button"
+                    id="customerModalClose"
+                    class="customer-modal-close"
+                    aria-label="Close booking details">
+                &times;
+            </button>
+        </div>
+
+        <div class="customer-modal-body">
+
+            <div id="customerModalDetails">
+                <!-- JavaScript displays booking details -->
+            </div>
+
+            <form id="customerRescheduleForm" hidden>
+
+                <div class="customer-reschedule-fields">
+
+                    <label for="customerRescheduleDate">
+                        New Preferred Date
+                        <input type="date"
+                               id="customerRescheduleDate"
+                               required>
+                    </label>
+
+                    <label for="customerRescheduleTime">
+                        New Preferred Time
+                        <select id="customerRescheduleTime"
+                                required>
+                            <option value="08:00">8:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                        </select>
+                    </label>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="customer-modal-actions">
+
+            <button type="button"
+                    id="customerModalReschedule"
+                    class="customer-modal-primary"
+                    hidden>
+                Reschedule Preview
+            </button>
+
+            <button type="button"
+                    id="customerModalSave"
+                    class="customer-modal-primary"
+                    hidden>
+                Save New Schedule
+            </button>
+
+            <button type="button"
+                    id="customerModalRemove"
+                    hidden>
+                Remove Preview
+            </button>
+
+            <button type="button"
+                    id="customerModalCancel">
+                Close
+            </button>
+
+        </div>
+
+        <p id="customerModalMessage"
+           class="customer-modal-message"
+           role="status"></p>
+
+    </div>
+
+</div>
+
+
+</body>
+</html>

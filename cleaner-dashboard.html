@@ -1,0 +1,661 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Cleaner Dashboard | FUA LINK</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet"
+          href="assets/css/cleaner-dashboard.css">
+
+    <script defer
+            src="assets/js/cleaner-dashboard.js"></script>
+</head>
+
+<body class="cleaner-dashboard-page">
+
+<div class="cleaner-app">
+
+    <!-- SIDEBAR NAVIGATION -->
+
+    <aside class="cleaner-sidebar" id="cleanerSidebar">
+
+        <a href="index.html" class="cleaner-logo">
+            ✦ FUA<span>LINK</span>
+        </a>
+
+        <div class="sidebar-profile">
+            <div class="sidebar-avatar">A</div>
+
+            <div>
+                <strong>Sample Cleaner A</strong>
+                <small>Cleaning Professional</small>
+            </div>
+        </div>
+
+        <p class="sidebar-caption">WORKSPACE</p>
+
+        <nav class="cleaner-navigation"
+             aria-label="Cleaner dashboard">
+
+            <button class="cleaner-nav-link active"
+                    data-page="overview">
+                <span>⌂</span>
+                Overview
+            </button>
+
+            <button class="cleaner-nav-link"
+                    data-page="requests">
+                <span>▤</span>
+                Booking Requests
+            </button>
+
+            <button class="cleaner-nav-link"
+                    data-page="schedule">
+                <span>▦</span>
+                My Schedule
+            </button>
+
+            <button class="cleaner-nav-link"
+                    data-page="services">
+                <span>✧</span>
+                My Services
+            </button>
+
+            <button class="cleaner-nav-link"
+                    data-page="profile">
+                <span>◉</span>
+                My Profile
+            </button>
+
+        </nav>
+
+        <div class="cleaner-sidebar-bottom">
+            <p>Clean spaces. Brighter lives.</p>
+
+            <a href="index.html">
+                ← Return to Website
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- MAIN DASHBOARD -->
+
+    <div class="cleaner-main">
+
+        <!-- TOP NAVIGATION -->
+
+        <header class="cleaner-topbar">
+
+            <button id="cleanerMenuToggle"
+                    class="cleaner-menu-toggle"
+                    aria-label="Toggle navigation"
+                    aria-controls="cleanerSidebar"
+                    aria-expanded="false">
+                ☰
+            </button>
+
+            <div class="topbar-title">
+                <span>FUA LINK</span>
+                <strong>Professional Workspace</strong>
+            </div>
+
+            <div class="topbar-actions">
+
+                <span class="cleaner-demo-badge">
+                    DEMO MODE
+                </span>
+
+                <label for="availabilityStatus"
+                       class="availability-label">
+                    Status
+                </label>
+
+                <select id="availabilityStatus"
+                        aria-label="Your availability">
+                    <option value="available">
+                        Available
+                    </option>
+                    <option value="busy">
+                        Busy
+                    </option>
+                    <option value="offline">
+                        Offline
+                    </option>
+                </select>
+
+                <div class="topbar-avatar">A</div>
+
+            </div>
+
+        </header>
+
+        <main class="cleaner-content">
+
+            <!-- ========================= -->
+            <!-- OVERVIEW PAGE -->
+            <!-- ========================= -->
+
+            <section id="page-overview"
+                     class="cleaner-page">
+
+                <div class="cleaner-welcome">
+
+                    <div class="welcome-copy">
+
+                        <p class="eyebrow">
+                            YOUR PROFESSIONAL SPACE
+                        </p>
+
+                        <h1>
+                            Hello, Sample Cleaner A!
+                            <span>Ready for a fresh day?</span>
+                        </h1>
+
+                        <p>
+                            Manage your cleaning requests,
+                            organize your schedule and grow
+                            your services with FUA LINK.
+                        </p>
+
+                        <button class="welcome-button"
+                                data-page="requests">
+                            View Booking Requests ↗
+                        </button>
+
+                    </div>
+
+                    <div class="welcome-art"
+                         aria-hidden="true">
+                        ✦
+                    </div>
+
+                </div>
+
+                <!-- STATISTICS -->
+
+                <div class="cleaner-section-heading">
+                    <div>
+                        <p class="eyebrow">YOUR PERFORMANCE</p>
+                        <h2>Workspace Overview</h2>
+                    </div>
+
+                    <span class="demo-text">
+                        Illustrative data
+                    </span>
+                </div>
+
+                <div class="cleaner-stats">
+
+                    <article class="cleaner-stat-card stat-mint">
+                        <div class="stat-icon">▤</div>
+                        <p>New Requests</p>
+                        <strong id="statRequests">0</strong>
+                        <small>Pending review</small>
+                    </article>
+
+                    <article class="cleaner-stat-card stat-blue">
+                        <div class="stat-icon">▦</div>
+                        <p>Upcoming Jobs</p>
+                        <strong id="statUpcoming">0</strong>
+                        <small>Confirmed examples</small>
+                    </article>
+
+                    <article class="cleaner-stat-card stat-peach">
+                        <div class="stat-icon">✓</div>
+                        <p>Completed Jobs</p>
+                        <strong id="statCompleted">0</strong>
+                        <small>Sample job history</small>
+                    </article>
+
+                    <article class="cleaner-stat-card stat-lilac">
+                        <div class="stat-icon">★</div>
+                        <p>Customer Rating</p>
+                        <strong>4.8</strong>
+                        <small>Illustrative rating</small>
+                    </article>
+
+                </div>
+
+                <!-- OVERVIEW GRID -->
+
+                <div class="cleaner-overview-grid">
+
+                    <section class="cleaner-panel">
+
+                        <div class="panel-heading">
+                            <div>
+                                <p class="eyebrow">
+                                    WHAT'S NEXT
+                                </p>
+                                <h2>Recent Requests</h2>
+                            </div>
+
+                            <button class="panel-link"
+                                    data-page="requests">
+                                View All ↗
+                            </button>
+                        </div>
+
+                        <div id="overviewRequests"
+                             class="request-list">
+                        </div>
+
+                    </section>
+
+                    <section class="cleaner-panel schedule-preview">
+
+                        <div class="panel-heading">
+                            <div>
+                                <p class="eyebrow">
+                                    PLAN YOUR WEEK
+                                </p>
+                                <h2>Your Schedule</h2>
+                            </div>
+                        </div>
+
+                        <div id="miniCalendar"
+                             class="mini-calendar">
+                        </div>
+
+                        <button class="schedule-action"
+                                data-page="schedule">
+                            Open Full Calendar ↗
+                        </button>
+
+                    </section>
+
+                </div>
+
+                <!-- PROMOTIONAL PANEL -->
+
+                <section class="cleaner-growth-banner">
+
+                    <div>
+                        <p class="eyebrow">
+                            GROW WITH FUA LINK
+                        </p>
+
+                        <h2>
+                            Make every clean count.
+                        </h2>
+
+                        <p>
+                            Keep your services updated,
+                            organize your availability and
+                            create a great experience
+                            for every customer.
+                        </p>
+
+                        <button data-page="services">
+                            Manage My Services ↗
+                        </button>
+                    </div>
+
+                </section>
+
+            </section>
+
+            <!-- ========================= -->
+            <!-- BOOKING REQUESTS PAGE -->
+            <!-- ========================= -->
+
+            <section id="page-requests"
+                     class="cleaner-page"
+                     hidden>
+
+                <div class="cleaner-page-heading">
+                    <p class="eyebrow">
+                        YOUR WORK OPPORTUNITIES
+                    </p>
+
+                    <h1>Booking Requests</h1>
+
+                    <p>
+                        Review demonstration requests
+                        and preview booking actions.
+                    </p>
+                </div>
+
+                <div class="cleaner-toolbar">
+
+                    <label for="requestFilter">
+                        Filter Requests
+                    </label>
+
+                    <select id="requestFilter">
+                        <option value="all">All Requests</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="completed">Completed</option>
+                        <option value="declined">Declined</option>
+                    </select>
+
+                </div>
+
+                <div id="allRequests"
+                     class="request-list">
+                </div>
+
+                <p class="cleaner-disclaimer">
+                    Demonstration only. Actions do not
+                    submit or update real bookings.
+                </p>
+
+            </section>
+
+            <!-- ========================= -->
+            <!-- SCHEDULE PAGE -->
+            <!-- ========================= -->
+
+            <section id="page-schedule"
+                     class="cleaner-page"
+                     hidden>
+
+                <div class="cleaner-page-heading">
+                    <p class="eyebrow">
+                        STAY ORGANIZED
+                    </p>
+
+                    <h1>My Schedule</h1>
+
+                    <p>
+                        Preview your calendar and mark
+                        dates as unavailable.
+                    </p>
+                </div>
+
+                <div class="schedule-layout">
+
+                    <section class="cleaner-panel">
+
+                        <div class="calendar-header">
+
+                            <button id="prevMonth"
+                                    aria-label="Previous month">
+                                ←
+                            </button>
+
+                            <h2 id="calendarMonth"></h2>
+
+                            <button id="nextMonth"
+                                    aria-label="Next month">
+                                →
+                            </button>
+
+                        </div>
+
+                        <div class="calendar-weekdays"
+                             aria-hidden="true">
+                            <span>Sun</span>
+                            <span>Mon</span>
+                            <span>Tue</span>
+                            <span>Wed</span>
+                            <span>Thu</span>
+                            <span>Fri</span>
+                            <span>Sat</span>
+                        </div>
+
+                        <div id="fullCalendar"
+                             class="full-calendar">
+                        </div>
+
+                    </section>
+
+                    <aside class="cleaner-panel">
+
+                        <p class="eyebrow">
+                            DAILY AVAILABILITY
+                        </p>
+
+                        <h2>Selected Date</h2>
+
+                        <p id="selectedDateLabel">
+                            Select a date on the calendar.
+                        </p>
+
+                        <button id="markUnavailable"
+                                class="primary-cleaner-button">
+                            Mark Unavailable
+                        </button>
+
+                        <button id="markAvailable"
+                                class="secondary-cleaner-button">
+                            Mark Available
+                        </button>
+
+                        <p id="scheduleMessage"
+                           role="status"
+                           aria-live="polite">
+                        </p>
+
+                        <p class="cleaner-disclaimer">
+                            Availability changes are
+                            temporary frontend previews.
+                            The backend will handle
+                            scheduling and prevent
+                            double bookings.
+                        </p>
+
+                    </aside>
+
+                </div>
+
+            </section>
+
+            <!-- ========================= -->
+            <!-- MY SERVICES PAGE -->
+            <!-- ========================= -->
+
+            <section id="page-services"
+                     class="cleaner-page"
+                     hidden>
+
+                <div class="cleaner-page-heading">
+                    <p class="eyebrow">
+                        YOUR EXPERTISE
+                    </p>
+
+                    <h1>My Services</h1>
+
+                    <p>
+                        Preview and organize the cleaning
+                        services you offer.
+                    </p>
+                </div>
+
+                <div class="services-management-grid">
+
+                    <section class="cleaner-panel">
+
+                        <div class="panel-heading">
+                            <h2>Current Services</h2>
+                        </div>
+
+                        <div id="myServicesList"
+                             class="managed-services">
+                        </div>
+
+                    </section>
+
+                    <section class="cleaner-panel">
+
+                        <p class="eyebrow">
+                            EXPAND YOUR OFFERINGS
+                        </p>
+
+                        <h2>Add a Service</h2>
+
+                        <form id="addServiceForm">
+
+                            <label for="newService">
+                                Service Category
+                            </label>
+
+                            <select id="newService"
+                                    required>
+                                <option value="">
+                                    Select service
+                                </option>
+                                <option value="home">
+                                    Home Cleaning
+                                </option>
+                                <option value="office">
+                                    Office Cleaning
+                                </option>
+                                <option value="deep">
+                                    Deep Cleaning
+                                </option>
+                                <option value="vehicle">
+                                    Vehicle Cleaning
+                                </option>
+                                <option value="laundry">
+                                    Laundry Services
+                                </option>
+                                <option value="commercial">
+                                    Shop & Restaurant Cleaning
+                                </option>
+                                <option value="gardening">
+                                    Gardening & Outdoor Care
+                                </option>
+                            </select>
+
+                            <label for="servicePrice">
+                                Starting Price (KSh)
+                            </label>
+
+                            <input type="number"
+                                   id="servicePrice"
+                                   min="1"
+                                   step="1"
+                                   placeholder="e.g. 1500"
+                                   required>
+
+                            <button type="submit"
+                                    class="primary-cleaner-button">
+                                Add Service +
+                            </button>
+
+                            <p id="serviceMessage"
+                               role="status"
+                               aria-live="polite">
+                            </p>
+
+                        </form>
+
+                    </section>
+
+                </div>
+
+            </section>
+
+            <!-- ========================= -->
+            <!-- PROFESSIONAL PROFILE PAGE -->
+            <!-- ========================= -->
+
+            <section id="page-profile"
+                     class="cleaner-page"
+                     hidden>
+
+                <div class="cleaner-page-heading">
+                    <p class="eyebrow">
+                        YOUR PROFESSIONAL IDENTITY
+                    </p>
+
+                    <h1>My Profile</h1>
+
+                    <p>
+                        Preview how your public
+                        cleaner profile can be managed.
+                    </p>
+                </div>
+
+                <section class="cleaner-panel profile-panel">
+
+                    <div class="profile-heading">
+
+                        <div class="profile-avatar">A</div>
+
+                        <div>
+                            <h2>Sample Cleaner A</h2>
+                            <p>Professional Profile Preview</p>
+                        </div>
+
+                    </div>
+
+                    <form id="cleanerProfileForm">
+
+                        <div class="profile-form-grid">
+
+                            <div class="cleaner-form-field">
+                                <label for="profileName">
+                                    Full Name
+                                </label>
+
+                                <input type="text"
+                                       id="profileName"
+                                       value="Sample Cleaner A"
+                                       required>
+                            </div>
+
+                            <div class="cleaner-form-field">
+                                <label for="profileLocation">
+                                    Service Location
+                                </label>
+
+                                <input type="text"
+                                       id="profileLocation"
+                                       value="Nairobi, Westlands"
+                                       required>
+                            </div>
+
+                        </div>
+
+                        <div class="cleaner-form-field">
+                            <label for="profileBio">
+                                Professional Bio
+                            </label>
+
+                            <textarea id="profileBio"
+                                      rows="5"
+                                      maxlength="500"
+                                      required>An illustrative cleaning professional offering home and deep cleaning services.</textarea>
+                        </div>
+
+                        <button type="submit"
+                                class="primary-cleaner-button">
+                            Preview Profile Changes
+                        </button>
+
+                        <p id="profileMessage"
+                           role="status"
+                           aria-live="polite">
+                        </p>
+
+                    </form>
+
+                    <p class="cleaner-disclaimer">
+                        Profile changes are not saved
+                        to a database.
+                    </p>
+
+                </section>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+<script defer src="assets/js/booking-store.js"></script>
+<script defer src="assets/js/cleaner-dashboard.js"></script>
+</body>
+</html>
