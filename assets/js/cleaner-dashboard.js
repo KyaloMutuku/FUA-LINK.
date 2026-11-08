@@ -2,7 +2,7 @@
 "use strict";
 
 /* ==========================================
-   FUA LINK — BLOCK 8
+   SAFI LINK — BLOCK 8
    CLEANER DASHBOARD FRONTEND LOGIC
 
    All data and actions are demonstrations.
@@ -97,12 +97,12 @@ const demoCleanerId = dashboardParams.get("cleaner");
 function loadSharedCleanerRequests() {
     if (
         !demoCleanerId ||
-        !window.FUA_BOOKING_STORE
+        !window.SAFI_BOOKING_STORE
     ) {
         return [];
     }
 
-    return window.FUA_BOOKING_STORE
+    return window.SAFI_BOOKING_STORE
         .getCleanerBookings(demoCleanerId)
         .map(booking => ({
             id: booking.id,
@@ -121,14 +121,11 @@ function loadSharedCleanerRequests() {
 }
 
 function refreshSharedRequests() {
-    const sampleRequests = requests.filter(
-        request => !request.shared
-    );
+    const sharedRequests = loadSharedCleanerRequests();
 
-    requests = [
-        ...loadSharedCleanerRequests(),
-        ...sampleRequests
-    ];
+    requests = demoCleanerId
+        ? sharedRequests
+        : [...originalSampleRequests];
 
     renderRequests();
     updateStatistics();
@@ -137,14 +134,14 @@ function refreshSharedRequests() {
 }
 
 window.addEventListener(
-    "fua:bookings-updated",
+    "safi:bookings-updated",
     refreshSharedRequests
 );
 
 window.addEventListener(
     "storage",
     event => {
-        if (event.key === "fuaSharedBookingsV1") {
+        if (event.key === "safiSharedBookingsV1") {
             refreshSharedRequests();
         }
     }
@@ -423,23 +420,22 @@ function changeRequestStatus(id, newStatus) {
     }
 
     if (request.shared) {
-    const result =
-        window.FUA_BOOKING_STORE
-            ?.updateBookingStatus(
-                request.id,
-                demoCleanerId,
-                newStatus
-            );
+   const result =
+    window.SAFI_BOOKING_STORE.updateBookingStatus(
+        request.id,
+        demoCleanerId,
+        newStatus
+    );
 
-    if (!result?.success) {
-        alert(
-            result?.message ||
-            "Could not update this booking."
-        );
-        return;
-    }
+if (!result.success) {
+    alert(
+        result.message ||
+        "Unable to update booking status."
+    );
+    return;
+}
 
-    refreshSharedRequests();
+refreshSharedRequests();
     return;
 }
 

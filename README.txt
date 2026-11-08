@@ -1,4 +1,4 @@
-FUA LINK — CUSTOMER DASHBOARD REDESIGN (FRONTEND ONLY)
+SAFI LINK — CUSTOMER DASHBOARD REDESIGN (FRONTEND ONLY)
 
 Copy these 3 files into your existing FUA-LINK project, replacing the earlier Block 7 versions:
   customer-dashboard.html

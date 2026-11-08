@@ -1,1500 +1,1600 @@
 
 "use strict";
 
-/* =====================================================
-   FUA LINK — BLOCK 18
-   CLEANER DASHBOARD & PROFESSIONAL PROFILE MANAGEMENT
+/* =========================================================
+   SAFILINK — BLOCK 25
+   CUSTOMER DASHBOARD FRONTEND
 
-   Frontend demonstration only.
-   No real authentication, booking API or database.
-   ===================================================== */
+   Frontend-only demonstration.
+   No real authentication, database or payment processing.
+   ========================================================= */
 
-// =====================================================
-// 1. CONFIGURATION
-// =====================================================
+(() => {
+    // -----------------------------------------------------
+    // 1. CONFIGURATION
+    // -----------------------------------------------------
 
-const serviceNames = {
-    home: "Home Cleaning",
-    office: "Office Cleaning",
-    deep: "Deep Cleaning",
-    vehicle: "Vehicle Cleaning",
-    laundry: "Laundry Services",
-    commercial: "Shop & Restaurant Cleaning",
-    gardening: "Gardening & Outdoor Care"
-};
+    const BOOKING_STORAGE_KEY = "safiSharedBookingsV1";
+    const PROFILE_STORAGE_KEY = "safiCustomerProfileV1";
+    const SAVED_STORAGE_KEY = "safiSavedCleanersV1";
 
-const WORKER_DRAFT_KEY = "fuaWorkerOnboardingDraft";
+    const bookingStore = window.SAFI_BOOKING_STORE;
 
-const today = new Date();
+    const $ = id => document.getElementById(id);
 
-function dateKey(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+    const today = new Date();
 
-    return `${year}-${month}-${day}`;
-}
-
-function dateFromToday(days) {
-    return dateKey(
-        new Date(
-            today.getFullYear(),
-            today.getMonth(),
-            today.getDate() + days
-        )
+    let displayedMonth = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        1
     );
-}
 
-function formatPrice(amount) {
-    return `KSh ${Number(amount).toLocaleString("en-KE")}`;
-}
+    let selectedDate = formatDateKey(today);
+    let activeBookingId = null;
 
-function getElement(id) {
-    return document.getElementById(id);
-}
+    let customerBookings = [];
+    let savedCleaners = [];
 
-function setText(id, value) {
-    const element = getElement(id);
+    const statusLabels = {
+        preview: "Preview",
+        pending: "Pending",
+        confirmed: "Confirmed",
+        completed: "Completed",
+        cancelled: "Cancelled",
+        declined: "Declined"
+    };
 
-    if (element) {
-        element.textContent = value;
-    }
-}
+    // -----------------------------------------------------
+    // 2. UTILITIES
+    // -----------------------------------------------------
 
-// =====================================================
-// 2. SAMPLE BOOKING DATA
-// =====================================================
+    function formatDateKey(date) {
+        const year = date.getFullYear();
+        const month = String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
 
-let requests = [
-    {
-        id: "FL-2001",
-        customer: "Sample Customer A",
-        service: "Home Cleaning",
-        location: "Westlands, Nairobi",
-        date: dateFromToday(2),
-        time: "09:00",
-        price: 1500,
-        status: "pending"
-    },
-    {
-        id: "FL-2002",
-        customer: "Sample Customer B",
-        service: "Deep Cleaning",
-        location: "Kilimani, Nairobi",
-        date: dateFromToday(5),
-        time: "11:00",
-        price: 3500,
-        status: "confirmed"
-    },
-    {
-        id: "FL-2003",
-        customer: "Sample Customer C",
-        service: "Home Cleaning",
-        location: "Karen, Nairobi",
-        date: dateFromToday(-3),
-        time: "08:30",
-        price: 1800,
-        status: "completed"
-    },
-    {
-        id: "FL-2004",
-        customer: "Sample Customer D",
-        service: "Deep Cleaning",
-        location: "Runda, Nairobi",
-        date: dateFromToday(8),
-        time: "10:00",
-        price: 2800,
-        status: "pending"
-    }
-];
+        const day = String(
+            date.getDate()
+        ).padStart(2, "0");
 
-/* =====================================================
-   BLOCK 20 — SHARED BOOKING INTEGRATION
-   ===================================================== */
-
-// Demo identity only. Real identity must come from
-// authenticated backend sessions later.
-
-const dashboardParams = new URLSearchParams(
-    window.location.search
-);
-
-const demoCleanerId = dashboardParams.get("cleaner");
-
-// Keep the original sample requests separate so that
-// refreshing shared bookings does not duplicate them.
-
-const originalSampleRequests = [...requests];
-
-function loadSharedCleanerRequests() {
-    const store = window.FUA_BOOKING_STORE;
-
-    if (!store || !demoCleanerId) {
-        return [];
+        return `${year}-${month}-${day}`;
     }
 
-    return store
-        .getCleanerBookings(demoCleanerId)
-        .map(booking => ({
-            id: booking.id,
-            customer: booking.customerName ||
-                "Customer",
-            service: booking.service ||
+    function formatDate(value) {
+        if (!value) return "Date not specified";
+
+        const date = new Date(`${value}T12:00:00`);
+
+        if (Number.isNaN(date.getTime())) {
+            return value;
+        }
+
+        return new Intl.DateTimeFormat("en-KE", {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        }).format(date);
+    }
+
+    function formatCurrency(value) {
+        return `KSh ${Number(value || 0)
+            .toLocaleString("en-KE")}`;
+    }
+
+    function setText(id, value) {
+        const element = $(id);
+
+        if (element) {
+            element.textContent = String(value);
+        }
+    }
+
+    function readJSON(key, fallback) {
+        try {
+            const stored = localStorage.getItem(key);
+
+            if (!stored) return fallback;
+
+            return JSON.parse(stored);
+        } catch (error) {
+            console.warn(
+                `Unable to read ${key}:`,
+                error
+            );
+
+            return fallback;
+        }
+    }
+
+    function writeJSON(key, value) {
+        try {
+            localStorage.setItem(
+                key,
+                JSON.stringify(value)
+            );
+
+            return true;
+        } catch (error) {
+            console.warn(
+                `Unable to save ${key}:`,
+                error
+            );
+
+            return false;
+        }
+    }
+
+    function makeElement(tag, className, text) {
+        const element = document.createElement(tag);
+
+        if (className) {
+            element.className = className;
+        }
+
+        if (text !== undefined) {
+            element.textContent = String(text);
+        }
+
+        return element;
+    }
+
+    function getCustomerEmail() {
+        return String(
+            $("customerProfileEmail")?.value || ""
+        ).trim().toLowerCase();
+    }
+
+    function normalizeBooking(booking, source) {
+        return {
+            ...booking,
+            id: String(booking.id || ""),
+            cleanerId: booking.cleanerId ?? null,
+            cleanerName:
+                booking.cleanerName ||
+                booking.cleaner ||
+                "Cleaning Professional",
+            service:
+                booking.service ||
+                booking.serviceName ||
                 "Cleaning Service",
-            location: [
-                booking.address,
-                booking.county
-            ].filter(Boolean).join(", "),
-            date: booking.date,
-            time: booking.time,
-            price: Number(booking.total) || 0,
-            status: booking.status,
-            shared: true
-        }));
-}
-
-function refreshSharedRequests() {
-    requests = [
-        ...loadSharedCleanerRequests(),
-        ...originalSampleRequests
-    ];
-
-    renderRequests();
-    updateStatistics();
-    renderMiniCalendar();
-    renderFullCalendar();
-}
-
-window.addEventListener(
-    "fua:bookings-updated",
-    refreshSharedRequests
-);
-
-window.addEventListener("storage", event => {
-    if (event.key === "fuaSharedBookingsV1") {
-        refreshSharedRequests();
+            date: booking.date || "",
+            time: booking.time || "",
+            total: Number(
+                booking.total ??
+                booking.price ??
+                0
+            ),
+            status:
+                source === "preview"
+                    ? "preview"
+                    : String(
+                        booking.status || "pending"
+                    ).toLowerCase(),
+            source
+        };
     }
-});
 
+    // -----------------------------------------------------
+    // 3. NAVIGATION
+    // -----------------------------------------------------
 
-let myServices = [
-    { id: "home", price: 1500 },
-    { id: "deep", price: 3000 }
-];
+    const dashboardPages = document.querySelectorAll(
+        ".customer-page"
+    );
 
-const unavailableDates = new Set();
+    const navigationButtons = document.querySelectorAll(
+        "[data-page]"
+    );
 
-// =====================================================
-// 3. LOAD PROFESSIONAL REGISTRATION DRAFT
-// =====================================================
+    function showPage(pageName) {
+        const target =
+            $(`page-${pageName}`) ||
+            $(`customer-page-${pageName}`);
 
-let workerDraft = null;
+        if (!target) return;
 
-function loadWorkerDraft() {
-    try {
-        const saved = localStorage.getItem(
-            WORKER_DRAFT_KEY
-        );
+        dashboardPages.forEach(page => {
+            page.hidden = page !== target;
+        });
 
-        if (!saved) return;
+        document.querySelectorAll(
+            ".customer-nav-link"
+        ).forEach(link => {
+            const active =
+                link.dataset.page === pageName;
 
-        const data = JSON.parse(saved);
+            link.classList.toggle("active", active);
 
-        if (
-            !data ||
-            data.accountType !== "cleaner" ||
-            !Array.isArray(data.services)
-        ) {
-            return;
+            if (active) {
+                link.setAttribute(
+                    "aria-current",
+                    "page"
+                );
+            } else {
+                link.removeAttribute("aria-current");
+            }
+        });
+
+        const sidebar = $("customerSidebar");
+
+        if (sidebar) {
+            sidebar.classList.remove("open");
         }
 
-        workerDraft = data;
+        const toggle = $("customerMenuToggle");
 
-        myServices = data.services
-            .filter(id =>
-                Object.prototype.hasOwnProperty.call(
-                    serviceNames,
-                    id
-                )
-            )
-            .map(id => ({
-                id,
-                price: Number(
-                    data.servicePrices?.[id]
-                )
-            }))
-            .filter(service =>
-                Number.isSafeInteger(service.price) &&
-                service.price > 0
-            );
-
-    } catch (error) {
-        console.warn(
-            "Could not load professional draft:",
-            error
-        );
-    }
-}
-
-function saveWorkerDraft() {
-    if (!workerDraft) {
-        return false;
-    }
-
-    workerDraft.services = myServices.map(
-        service => service.id
-    );
-
-    workerDraft.servicePrices = Object.fromEntries(
-        myServices.map(service => [
-            service.id,
-            service.price
-        ])
-    );
-
-    workerDraft.updatedAt =
-        new Date().toISOString();
-
-    // A local draft is never a verified public profile.
-    workerDraft.verified = false;
-    workerDraft.published = false;
-    workerDraft.demo = true;
-
-    try {
-        localStorage.setItem(
-            WORKER_DRAFT_KEY,
-            JSON.stringify(workerDraft)
-        );
-
-        return true;
-
-    } catch (error) {
-        console.warn(
-            "Unable to save professional draft:",
-            error
-        );
-
-        return false;
-    }
-}
-
-loadWorkerDraft();
-
-// =====================================================
-// 4. UPDATE PROFESSIONAL IDENTITY
-// =====================================================
-
-function refreshWorkerIdentity() {
-    if (!workerDraft) return;
-
-    const name =
-        workerDraft.name || "Cleaning Professional";
-
-    const initial =
-        name.trim().charAt(0).toUpperCase() || "C";
-
-    const sidebarName = document.querySelector(
-        ".sidebar-profile strong"
-    );
-
-    const profileHeading = document.querySelector(
-        ".profile-heading h2"
-    );
-
-    const welcomeHeading = document.querySelector(
-        ".cleaner-welcome h1"
-    );
-
-    if (sidebarName) {
-        sidebarName.textContent = name;
-    }
-
-    if (profileHeading) {
-        profileHeading.textContent = name;
-    }
-
-    if (welcomeHeading) {
-        const subtitle = welcomeHeading.querySelector(
-            "span"
-        );
-
-        welcomeHeading.replaceChildren(
-            document.createTextNode(
-                `Hello, ${name}! `
-            )
-        );
-
-        if (subtitle) {
-            welcomeHeading.appendChild(subtitle);
-        }
-    }
-
-    document.querySelectorAll(
-        ".sidebar-avatar, .topbar-avatar, .profile-avatar"
-    ).forEach(avatar => {
-        avatar.textContent = initial;
-    });
-
-    const nameInput = getElement("profileName");
-    const locationInput = getElement("profileLocation");
-    const bioInput = getElement("profileBio");
-
-    if (nameInput) {
-        nameInput.value = name;
-    }
-
-    if (locationInput) {
-        locationInput.value =
-            workerDraft.location || "";
-    }
-
-    if (bioInput) {
-        bioInput.value =
-            workerDraft.bio || "";
-    }
-
-    const availability = getElement(
-        "availabilityStatus"
-    );
-
-    if (
-        availability &&
-        ["available", "busy", "offline"].includes(
-            workerDraft.status
-        )
-    ) {
-        availability.value = workerDraft.status;
-    }
-}
-
-// =====================================================
-// 5. DASHBOARD NAVIGATION
-// =====================================================
-
-const sidebar = getElement("cleanerSidebar");
-const menuToggle = getElement("cleanerMenuToggle");
-
-const pages = document.querySelectorAll(
-    ".cleaner-page"
-);
-
-const navigationButtons = document.querySelectorAll(
-    "[data-page]"
-);
-
-function showPage(pageName) {
-    const target = getElement(
-        `page-${pageName}`
-    );
-
-    if (!target) return;
-
-    pages.forEach(page => {
-        page.hidden = page !== target;
-    });
-
-    document.querySelectorAll(
-        ".cleaner-nav-link"
-    ).forEach(button => {
-        const active =
-            button.dataset.page === pageName;
-
-        button.classList.toggle(
-            "active",
-            active
-        );
-
-        if (active) {
-            button.setAttribute(
-                "aria-current",
-                "page"
-            );
-        } else {
-            button.removeAttribute(
-                "aria-current"
+        if (toggle) {
+            toggle.setAttribute(
+                "aria-expanded",
+                "false"
             );
         }
-    });
 
-    if (sidebar) {
-        sidebar.classList.remove("open");
+        if (pageName === "calendar") {
+            renderFullCalendar();
+        }
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
     }
 
-    if (menuToggle) {
-        menuToggle.setAttribute(
-            "aria-expanded",
-            "false"
-        );
+    navigationButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            showPage(button.dataset.page);
+        });
+    });
+
+    const sidebar = $("customerSidebar");
+    const menuToggle = $("customerMenuToggle");
+
+    if (sidebar && menuToggle) {
+        menuToggle.addEventListener("click", () => {
+            const isOpen =
+                sidebar.classList.toggle("open");
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                String(isOpen)
+            );
+        });
     }
 
-    if (pageName === "schedule") {
-        renderFullCalendar();
+    // -----------------------------------------------------
+    // 4. CUSTOMER PROFILE
+    // -----------------------------------------------------
+
+    function loadCustomerProfile() {
+        const profile = readJSON(
+            PROFILE_STORAGE_KEY,
+            null
+        );
+
+        if (!profile) return;
+
+        const fields = {
+            customerProfileName: profile.name,
+            customerProfileEmail: profile.email,
+            customerProfilePhone: profile.phone,
+            customerProfileLocation: profile.location
+        };
+
+        Object.entries(fields).forEach(
+            ([id, value]) => {
+                if ($(id) && value !== undefined) {
+                    $(id).value = value;
+                }
+            }
+        );
+
+        updateCustomerIdentity();
     }
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
+    function updateCustomerIdentity() {
+        const name = String(
+            $("customerProfileName")?.value ||
+            "Customer"
+        ).trim();
 
-navigationButtons.forEach(button => {
-    button.addEventListener("click", () => {
-        showPage(button.dataset.page);
-    });
-});
+        const firstName =
+            name.split(/\s+/)[0] || "Customer";
 
-if (menuToggle && sidebar) {
-    menuToggle.addEventListener("click", () => {
-        const open = sidebar.classList.toggle(
-            "open"
-        );
+        document.querySelectorAll(
+            "[data-customer-name]"
+        ).forEach(element => {
+            element.textContent = firstName;
+        });
 
-        menuToggle.setAttribute(
-            "aria-expanded",
-            String(open)
-        );
-    });
-}
+        document.querySelectorAll(
+            "[data-customer-initial]"
+        ).forEach(element => {
+            element.textContent =
+                firstName.charAt(0).toUpperCase();
+        });
+    }
 
-// =====================================================
-// 6. PROFESSIONAL AVAILABILITY
-// =====================================================
+    const profileForm = $("customerProfileForm");
 
-const availabilitySelect = getElement(
-    "availabilityStatus"
-);
+    profileForm?.addEventListener(
+        "submit",
+        event => {
+            event.preventDefault();
 
-if (availabilitySelect) {
-    availabilitySelect.addEventListener(
-        "change",
-        () => {
-            const status = availabilitySelect.value;
+            if (!profileForm.reportValidity()) {
+                return;
+            }
 
-            const labels = {
-                available: "Available",
-                busy: "Busy",
-                offline: "Offline"
+            const profile = {
+                name: String(
+                    $("customerProfileName")?.value || ""
+                ).trim(),
+                email: getCustomerEmail(),
+                phone: String(
+                    $("customerProfilePhone")?.value || ""
+                ).trim(),
+                location: String(
+                    $("customerProfileLocation")?.value || ""
+                ).trim(),
+                updatedAt: new Date().toISOString()
             };
 
-            availabilitySelect.title =
-                `Demo availability: ${labels[status]}`;
-
-            if (workerDraft) {
-                workerDraft.status = status;
-
-                saveWorkerDraft();
+            if (!profile.name || !profile.email) {
+                alert(
+                    "Please provide your name and email."
+                );
+                return;
             }
+
+            const saved = writeJSON(
+                PROFILE_STORAGE_KEY,
+                profile
+            );
+
+            if (!saved) {
+                alert(
+                    "Unable to save your profile locally."
+                );
+                return;
+            }
+
+            updateCustomerIdentity();
+            refreshDashboard();
+
+            alert(
+                "Your demonstration profile was saved."
+            );
         }
     );
-}
 
-// =====================================================
-// 7. DASHBOARD STATISTICS
-// =====================================================
+    // -----------------------------------------------------
+    // 5. LOAD CUSTOMER BOOKINGS
+    // -----------------------------------------------------
 
-function updateStatistics() {
-    const pending = requests.filter(
-        request => request.status === "pending"
-    ).length;
+    function loadSharedBookings() {
+        if (
+            !bookingStore ||
+            typeof bookingStore.getCustomerBookings !==
+                "function"
+        ) {
+            console.warn(
+                "SAFILINK booking store is unavailable."
+            );
 
-    const currentDateTime =
-        `${dateKey(new Date())}T` +
-        new Date().toTimeString().slice(0, 5);
+            return [];
+        }
 
-    const upcoming = requests.filter(
-        request =>
-            request.status === "confirmed" &&
-            `${request.date}T${request.time}` >=
-                currentDateTime
-    ).length;
+        const email = getCustomerEmail();
 
-    const completed = requests.filter(
-        request => request.status === "completed"
-    ).length;
+        if (!email) return [];
 
-    setText("statRequests", pending);
-    setText("statUpcoming", upcoming);
-    setText("statCompleted", completed);
-}
+        const bookings =
+            bookingStore.getCustomerBookings(email);
 
-// =====================================================
-// 8. BOOKING REQUEST CARDS
-// =====================================================
+        if (!Array.isArray(bookings)) return [];
 
-function makeActionButton(
-    label,
-    className,
-    callback
-) {
-    const button = document.createElement(
-        "button"
-    );
-
-    button.type = "button";
-    button.textContent = label;
-    button.className = className;
-
-    button.addEventListener(
-        "click",
-        callback
-    );
-
-    return button;
-}
-
-function createRequestCard(
-    request,
-    compact = false
-) {
-    const card = document.createElement(
-        "article"
-    );
-
-    card.className = "request-card";
-
-    const details = document.createElement(
-        "div"
-    );
-
-    const title = document.createElement(
-        "h3"
-    );
-
-    title.textContent = request.service;
-
-    const customer = document.createElement(
-        "p"
-    );
-
-    customer.textContent =
-        `${request.customer} · ${request.location}`;
-
-    const schedule = document.createElement(
-        "p"
-    );
-
-    schedule.textContent =
-        `${request.date} at ${request.time} · ` +
-        request.id;
-
-    details.append(
-        title,
-        customer,
-        schedule
-    );
-
-    const meta = document.createElement(
-        "div"
-    );
-
-    meta.className = "request-meta";
-
-    const price = document.createElement(
-        "span"
-    );
-
-    price.className = "request-price";
-    price.textContent = formatPrice(
-        request.price
-    );
-
-    const status = document.createElement(
-        "span"
-    );
-
-    status.className =
-        `request-status ${request.status}`;
-
-    status.textContent = request.status;
-
-    meta.append(price, status);
-
-    if (!compact) {
-        const actions = document.createElement(
-            "div"
+        return bookings.map(booking =>
+            normalizeBooking(booking, "shared")
         );
-
-        actions.className = "request-actions";
-
-        if (request.status === "pending") {
-            actions.append(
-                makeActionButton(
-                    "Accept",
-                    "accept-btn",
-                    () => changeRequestStatus(
-                        request.id,
-                        "confirmed"
-                    )
-                ),
-                makeActionButton(
-                    "Decline",
-                    "decline-btn",
-                    () => changeRequestStatus(
-                        request.id,
-                        "declined"
-                    )
-                )
-            );
-        }
-
-        if (request.status === "confirmed") {
-            actions.append(
-                makeActionButton(
-                    "Mark Complete",
-                    "complete-btn",
-                    () => changeRequestStatus(
-                        request.id,
-                        "completed"
-                    )
-                )
-            );
-        }
-
-        details.appendChild(actions);
     }
 
-    card.append(details, meta);
-
-    return card;
-}
-
-function changeRequestStatus(
-    id,
-    newStatus
-) {
-    const request = requests.find(
-        item => item.id === id
-    );
-
-    if (!request) return;
-
-    const valid =
-        (
-            request.status === "pending" &&
-            ["confirmed", "declined"].includes(
-                newStatus
-            )
-        ) ||
-        (
-            request.status === "confirmed" &&
-            newStatus === "completed"
+    function loadPreviewBookings() {
+        const previews = readJSON(
+            "safiBookingPreviews",
+            []
         );
 
-    if (!valid) return;
+        if (!Array.isArray(previews)) {
+            return [];
+        }
 
-    if (newStatus === "confirmed") {
-        if (unavailableDates.has(request.date)) {
-            alert(
-                "This date is marked unavailable " +
-                "in your demonstration calendar."
+        const email = getCustomerEmail();
+
+        if (!email) return [];
+
+        return previews
+            .filter(booking =>
+                String(
+                    booking.customerEmail || ""
+                ).trim().toLowerCase() === email
+            )
+            .map(booking =>
+                normalizeBooking(booking, "preview")
+            );
+    }
+
+    function loadCustomerBookings() {
+        const shared = loadSharedBookings();
+        const previews = loadPreviewBookings();
+
+        const sharedIds = new Set(
+            shared.map(booking => booking.id)
+        );
+
+        const uniquePreviews = previews.filter(
+            booking =>
+                booking.id &&
+                !sharedIds.has(booking.id)
+        );
+
+        customerBookings = [
+            ...shared,
+            ...uniquePreviews
+        ].sort((a, b) => {
+            const first =
+                `${a.date}T${a.time}`;
+
+            const second =
+                `${b.date}T${b.time}`;
+
+            return second.localeCompare(first);
+        });
+    }
+
+    // -----------------------------------------------------
+    // 6. DASHBOARD STATISTICS
+    // -----------------------------------------------------
+
+    function updateStatistics() {
+        const total = customerBookings.length;
+
+        const now = new Date();
+        const currentTime =
+            `${formatDateKey(now)}T` +
+            now.toTimeString().slice(0, 5);
+
+        const upcoming = customerBookings.filter(
+            booking =>
+                ["pending", "confirmed"].includes(
+                    booking.status
+                ) &&
+                `${booking.date}T${booking.time}` >=
+                    currentTime
+        ).length;
+
+        const completed = customerBookings.filter(
+            booking =>
+                booking.status === "completed"
+        ).length;
+
+        setText("customerStatTotal", total);
+        setText("customerStatUpcoming", upcoming);
+        setText("customerStatCompleted", completed);
+        setText(
+            "customerStatSaved",
+            savedCleaners.length
+        );
+    }
+
+    // -----------------------------------------------------
+    // 7. BOOKING CARDS
+    // -----------------------------------------------------
+
+    function createBookingCard(booking) {
+        const card = makeElement(
+            "article",
+            "customer-booking-card"
+        );
+
+        const content = makeElement(
+            "div",
+            "customer-booking-content"
+        );
+
+        const heading = makeElement(
+            "h3",
+            "",
+            booking.service
+        );
+
+        const cleaner = makeElement(
+            "p",
+            "",
+            `Cleaner: ${booking.cleanerName}`
+        );
+
+        const schedule = makeElement(
+            "p",
+            "",
+            `${formatDate(booking.date)} at ` +
+            `${booking.time || "Time not set"}`
+        );
+
+        const reference = makeElement(
+            "small",
+            "",
+            `Booking: ${booking.id}`
+        );
+
+        content.append(
+            heading,
+            cleaner,
+            schedule,
+            reference
+        );
+
+        const meta = makeElement(
+            "div",
+            "customer-booking-meta"
+        );
+
+        const price = makeElement(
+            "strong",
+            "",
+            formatCurrency(booking.total)
+        );
+
+        const status = makeElement(
+            "span",
+            `customer-booking-status ${booking.status}`,
+            statusLabels[booking.status] ||
+                booking.status
+        );
+
+        const detailsButton = makeElement(
+            "button",
+            "customer-booking-details",
+            "View Details"
+        );
+
+        detailsButton.type = "button";
+
+        detailsButton.addEventListener(
+            "click",
+            () => openBookingModal(booking.id)
+        );
+
+        meta.append(
+            price,
+            status,
+            detailsButton
+        );
+
+        card.append(content, meta);
+
+        return card;
+    }
+
+    function renderBookingList(container, bookings) {
+        if (!container) return;
+
+        container.replaceChildren();
+
+        if (bookings.length === 0) {
+            container.appendChild(
+                makeElement(
+                    "p",
+                    "customer-empty-state",
+                    "No bookings match this view."
+                )
             );
 
             return;
         }
 
-        const conflict = requests.some(
-            other =>
-                other.id !== request.id &&
-                other.status === "confirmed" &&
-                other.date === request.date &&
-                other.time === request.time
+        bookings.forEach(booking => {
+            container.appendChild(
+                createBookingCard(booking)
+            );
+        });
+    }
+
+    function renderBookings() {
+        const recent = customerBookings.slice(0, 3);
+
+        renderBookingList(
+            $("customerRecentBookings"),
+            recent
         );
 
-        if (conflict) {
-            alert(
-                "A sample confirmed job already " +
-                "uses this date and start time."
+        const filter =
+            $("customerBookingFilter")?.value ||
+            "all";
+
+        const filtered =
+            filter === "all"
+                ? customerBookings
+                : customerBookings.filter(
+                    booking =>
+                        booking.status === filter
+                );
+
+        renderBookingList(
+            $("customerAllBookings"),
+            filtered
+        );
+    }
+
+    $("customerBookingFilter")?.addEventListener(
+        "change",
+        renderBookings
+    );
+
+    // -----------------------------------------------------
+    // 8. BOOKING DETAILS MODAL
+    // -----------------------------------------------------
+
+    function getBookingById(id) {
+        return customerBookings.find(
+            booking => booking.id === id
+        );
+    }
+
+    function openBookingModal(id) {
+        const booking = getBookingById(id);
+        const modal = $("customerBookingModal");
+        const details = $("customerModalDetails");
+
+        if (!booking || !modal || !details) {
+            return;
+        }
+
+        activeBookingId = booking.id;
+
+        details.replaceChildren();
+
+        const information = [
+            ["Booking Reference", booking.id],
+            ["Service", booking.service],
+            ["Cleaning Professional", booking.cleanerName],
+            ["Date", formatDate(booking.date)],
+            ["Time", booking.time || "Not specified"],
+            ["Amount", formatCurrency(booking.total)],
+            [
+                "Status",
+                statusLabels[booking.status] ||
+                    booking.status
+            ],
+            [
+                "Location",
+                [
+                    booking.address,
+                    booking.county
+                ].filter(Boolean).join(", ") ||
+                    "Not specified"
+            ]
+        ];
+
+        information.forEach(([label, value]) => {
+            const row = makeElement(
+                "div",
+                "customer-modal-detail-row"
             );
 
-            return;
+            const name = makeElement(
+                "strong",
+                "",
+                label
+            );
+
+            const description = makeElement(
+                "span",
+                "",
+                value
+            );
+
+            row.append(name, description);
+            details.appendChild(row);
+        });
+
+        const rescheduleButton =
+            $("customerModalReschedule");
+
+        const cancelButton =
+            $("customerModalCancel");
+
+        const saveButton =
+            $("customerModalSave");
+
+        const removeButton =
+            $("customerModalRemove");
+
+        
+        // BLOCK 26B — Customer booking management
+
+        const canManage =
+            booking.source === "shared" &&
+            ["pending", "confirmed"].includes(
+                booking.status
+            );
+
+        const storeReady =
+            typeof bookingStore?.cancelBooking === "function" &&
+            typeof bookingStore?.rescheduleBooking === "function";
+
+        const scheduledTime = new Date(
+            `${booking.date}T${booking.time}:00`
+        );
+
+        const isFuture =
+            !Number.isNaN(scheduledTime.getTime()) &&
+            scheduledTime.getTime() > Date.now();
+
+        const showActions =
+            canManage && storeReady && isFuture;
+
+        if (rescheduleButton) {
+            rescheduleButton.hidden = !showActions;
+        }
+
+        if (cancelButton) {
+            cancelButton.hidden = !showActions;
+        }
+
+        if (saveButton) {
+            saveButton.hidden = true;
+        }
+
+        if (removeButton) {
+            removeButton.hidden = true;
+        }
+
+        const form = $("customerRescheduleForm");
+
+        if (form) {
+            form.hidden = true;
+        }
+
+        const dateInput = $("customerRescheduleDate");
+        const timeInput = $("customerRescheduleTime");
+
+        if (dateInput) {
+            dateInput.value = booking.date;
+            dateInput.min = formatDateKey(new Date());
+        }
+
+        if (timeInput) {
+            timeInput.value = booking.time;
+        }
+
+        setText("customerModalMessage", "");
+
+
+        modal.hidden = false;
+
+        if (typeof modal.showModal === "function" &&
+            modal.tagName === "DIALOG") {
+            if (!modal.open) {
+                modal.showModal();
+            }
         }
     }
 
     
-/* BLOCK 20 — SAVE SHARED BOOKING DECISIONS */
+    // -----------------------------------------------------
+    // BLOCK 26B — CUSTOMER BOOKING ACTIONS
+    // -----------------------------------------------------
 
-if (request.shared) {
-    if (!demoCleanerId) {
-        alert("No demonstration cleaner was selected.");
-        return;
+    function showBookingMessage(message) {
+        setText("customerModalMessage", message);
     }
 
-    const result = window.FUA_BOOKING_STORE
-        ?.updateBookingStatus(
-            request.id,
-            demoCleanerId,
-            newStatus
-        );
+    function getActiveSharedBooking() {
+        if (!activeBookingId) return null;
 
-    if (!result?.success) {
-        alert(
-            result?.message ||
-            "Unable to update this booking."
-        );
-        return;
+        const booking = getBookingById(activeBookingId);
+
+        if (
+            !booking ||
+            booking.source !== "shared"
+        ) {
+            return null;
+        }
+
+        return booking;
     }
 
-    refreshSharedRequests();
-    return;
-}
+    // CANCEL BOOKING
 
-// Preserve existing sample-request behaviour.
-request.status = newStatus;
+    $("customerModalCancel")?.addEventListener(
+        "click",
+        () => {
+            const booking = getActiveSharedBooking();
 
+            if (!booking) {
+                showBookingMessage(
+                    "No submitted booking was selected."
+                );
+                return;
+            }
 
-    renderRequests();
-    updateStatistics();
-    renderMiniCalendar();
-    renderFullCalendar();
-}
+            if (
+                typeof bookingStore?.cancelBooking !==
+                "function"
+            ) {
+                showBookingMessage(
+                    "Booking cancellation is unavailable."
+                );
+                return;
+            }
 
-function renderRequestList(
-    container,
-    items,
-    compact
-) {
-    if (!container) return;
-
-    container.replaceChildren();
-
-    if (items.length === 0) {
-        const empty = document.createElement(
-            "p"
-        );
-
-        empty.textContent =
-            "No demonstration requests match this view.";
-
-        container.appendChild(empty);
-        return;
-    }
-
-    items.forEach(request => {
-        container.appendChild(
-            createRequestCard(
-                request,
-                compact
-            )
-        );
-    });
-}
-
-const overviewRequests = getElement(
-    "overviewRequests"
-);
-
-const allRequests = getElement(
-    "allRequests"
-);
-
-const requestFilter = getElement(
-    "requestFilter"
-);
-
-function renderRequests() {
-    const recent = [...requests]
-        .sort((a, b) =>
-            `${b.date}T${b.time}`.localeCompare(
-                `${a.date}T${a.time}`
-            )
-        )
-        .slice(0, 3);
-
-    renderRequestList(
-        overviewRequests,
-        recent,
-        true
-    );
-
-    const filter =
-        requestFilter?.value || "all";
-
-    const filtered =
-        filter === "all"
-            ? requests
-            : requests.filter(
-                request =>
-                    request.status === filter
+            const confirmed = window.confirm(
+                "Are you sure you want to cancel this booking?"
             );
 
-    renderRequestList(
-        allRequests,
-        filtered,
-        false
-    );
-}
+            if (!confirmed) return;
 
-if (requestFilter) {
-    requestFilter.addEventListener(
-        "change",
-        renderRequests
-    );
-}
+            const result = bookingStore.cancelBooking(
+                booking.id,
+                getCustomerEmail()
+            );
 
-// =====================================================
-// 9. CALENDAR STATE
-// =====================================================
-
-const calendarMonth = getElement(
-    "calendarMonth"
-);
-
-const fullCalendar = getElement(
-    "fullCalendar"
-);
-
-const miniCalendar = getElement(
-    "miniCalendar"
-);
-
-const selectedDateLabel = getElement(
-    "selectedDateLabel"
-);
-
-const scheduleMessage = getElement(
-    "scheduleMessage"
-);
-
-let displayedMonth = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    1
-);
-
-let selectedDate = dateKey(today);
-
-function hasConfirmedJob(date) {
-    return requests.some(
-        request =>
-            request.date === date &&
-            request.status === "confirmed"
-    );
-}
-
-// =====================================================
-// 10. CALENDAR DAY GENERATION
-// =====================================================
-
-function createCalendarDay(
-    day,
-    monthDate,
-    interactive
-) {
-    const date = new Date(
-        monthDate.getFullYear(),
-        monthDate.getMonth(),
-        day
-    );
-
-    const key = dateKey(date);
-
-    const button = document.createElement(
-        "button"
-    );
-
-    button.type = "button";
-    button.className = "calendar-day";
-    button.textContent = day;
-
-    if (key === dateKey(today)) {
-        button.classList.add("today");
-    }
-
-    if (unavailableDates.has(key)) {
-        button.classList.add(
-            "unavailable"
-        );
-    }
-
-    if (hasConfirmedJob(key)) {
-        button.classList.add(
-            "has-job"
-        );
-    }
-
-    if (
-        interactive &&
-        key === selectedDate
-    ) {
-        button.classList.add(
-            "selected"
-        );
-    }
-
-    if (interactive) {
-        button.setAttribute(
-            "aria-label",
-            key
-        );
-
-        button.setAttribute(
-            "aria-pressed",
-            String(key === selectedDate)
-        );
-
-        button.addEventListener(
-            "click",
-            () => {
-                selectedDate = key;
-
-                if (selectedDateLabel) {
-                    selectedDateLabel.textContent =
-                        new Intl.DateTimeFormat(
-                            "en-KE",
-                            { dateStyle: "full" }
-                        ).format(date);
-                }
-
-                if (scheduleMessage) {
-                    scheduleMessage.textContent = "";
-                }
-
-                renderFullCalendar();
+            if (!result.success) {
+                showBookingMessage(
+                    result.message ||
+                    "Unable to cancel the booking."
+                );
+                return;
             }
-        );
 
-    } else {
-        button.disabled = true;
-    }
+            refreshDashboard();
+            closeBookingModal();
 
-    return button;
-}
-
-function populateCalendar(
-    container,
-    monthDate,
-    interactive
-) {
-    if (!container) return;
-
-    container.replaceChildren();
-
-    const year = monthDate.getFullYear();
-    const month = monthDate.getMonth();
-
-    const firstDay = new Date(
-        year,
-        month,
-        1
-    ).getDay();
-
-    const daysInMonth = new Date(
-        year,
-        month + 1,
-        0
-    ).getDate();
-
-    for (let i = 0; i < firstDay; i++) {
-        const placeholder =
-            document.createElement("span");
-
-        container.appendChild(
-            placeholder
-        );
-    }
-
-    for (
-        let day = 1;
-        day <= daysInMonth;
-        day++
-    ) {
-        container.appendChild(
-            createCalendarDay(
-                day,
-                monthDate,
-                interactive
-            )
-        );
-    }
-}
-
-function renderFullCalendar() {
-    if (calendarMonth) {
-        calendarMonth.textContent =
-            new Intl.DateTimeFormat(
-                "en-KE",
-                {
-                    month: "long",
-                    year: "numeric"
-                }
-            ).format(displayedMonth);
-    }
-
-    populateCalendar(
-        fullCalendar,
-        displayedMonth,
-        true
+            alert(
+                result.message ||
+                "Booking cancelled successfully."
+            );
+        }
     );
-}
 
-function renderMiniCalendar() {
-    populateCalendar(
-        miniCalendar,
-        new Date(
+    // SHOW RESCHEDULE FORM
+
+    $("customerModalReschedule")?.addEventListener(
+        "click",
+        () => {
+            const booking = getActiveSharedBooking();
+
+            if (!booking) {
+                showBookingMessage(
+                    "Select a submitted booking first."
+                );
+                return;
+            }
+
+            const form = $("customerRescheduleForm");
+
+            if (!form) {
+                showBookingMessage(
+                    "The rescheduling form was not found."
+                );
+                return;
+            }
+
+            form.hidden = false;
+
+            const dateInput =
+                $("customerRescheduleDate");
+
+            const timeInput =
+                $("customerRescheduleTime");
+
+            if (dateInput) {
+                dateInput.value = booking.date;
+                dateInput.min =
+                    formatDateKey(new Date());
+            }
+
+            if (timeInput) {
+                timeInput.value = booking.time;
+            }
+
+            showBookingMessage(
+                "Choose your preferred new date and time."
+            );
+        }
+    );
+
+    // SUBMIT RESCHEDULING REQUEST
+
+    $("customerRescheduleForm")?.addEventListener(
+        "submit",
+        event => {
+            event.preventDefault();
+
+            const booking = getActiveSharedBooking();
+
+            if (!booking) {
+                showBookingMessage(
+                    "No active booking was selected."
+                );
+                return;
+            }
+
+            if (
+                typeof bookingStore?.rescheduleBooking !==
+                "function"
+            ) {
+                showBookingMessage(
+                    "Booking rescheduling is unavailable."
+                );
+                return;
+            }
+
+            const dateInput =
+                $("customerRescheduleDate");
+
+            const timeInput =
+                $("customerRescheduleTime");
+
+            if (!dateInput || !timeInput) {
+                showBookingMessage(
+                    "Rescheduling fields are missing."
+                );
+                return;
+            }
+
+            const newDate = dateInput.value;
+            const newTime = timeInput.value;
+
+            if (!newDate || !newTime) {
+                showBookingMessage(
+                    "Please choose a date and time."
+                );
+                return;
+            }
+
+            const result =
+                bookingStore.rescheduleBooking(
+                    booking.id,
+                    getCustomerEmail(),
+                    newDate,
+                    newTime
+                );
+
+            if (!result.success) {
+                showBookingMessage(
+                    result.message ||
+                    "Unable to reschedule the booking."
+                );
+                return;
+            }
+
+            refreshDashboard();
+            closeBookingModal();
+
+            alert(
+                result.message ||
+                "Rescheduling request submitted."
+            );
+        }
+    );
+
+    
+    // =====================================================
+    // BLOCK 26B — CUSTOMER BOOKING ACTION HANDLERS
+    // =====================================================
+
+    function showBookingMessage(message) {
+        setText("customerModalMessage", message);
+    }
+
+    function getActiveSharedBooking() {
+        if (!activeBookingId) return null;
+
+        const booking = getBookingById(activeBookingId);
+
+        if (!booking || booking.source !== "shared") {
+            return null;
+        }
+
+        return booking;
+    }
+
+    // -----------------------------------------------------
+    // 1. CANCEL A BOOKING
+    // -----------------------------------------------------
+
+    $("customerModalCancel")?.addEventListener(
+        "click",
+        () => {
+            const booking = getActiveSharedBooking();
+
+            if (!booking) {
+                showBookingMessage(
+                    "No submitted booking was selected."
+                );
+                return;
+            }
+
+            if (
+                typeof bookingStore?.cancelBooking !==
+                "function"
+            ) {
+                showBookingMessage(
+                    "Booking cancellation is unavailable."
+                );
+                return;
+            }
+
+            const confirmed = window.confirm(
+                "Are you sure you want to cancel this booking?"
+            );
+
+            if (!confirmed) return;
+
+            const result = bookingStore.cancelBooking(
+                booking.id,
+                getCustomerEmail()
+            );
+
+            if (!result.success) {
+                showBookingMessage(
+                    result.message ||
+                    "Unable to cancel the booking."
+                );
+                return;
+            }
+
+            refreshDashboard();
+            closeBookingModal();
+
+            alert(
+                result.message ||
+                "Booking cancelled successfully."
+            );
+        }
+    );
+
+    // -----------------------------------------------------
+    // 2. OPEN RESCHEDULING FORM
+    // -----------------------------------------------------
+
+    $("customerModalReschedule")?.addEventListener(
+        "click",
+        () => {
+            const booking = getActiveSharedBooking();
+
+            if (!booking) {
+                showBookingMessage(
+                    "Select a submitted booking first."
+                );
+                return;
+            }
+
+            const form = $("customerRescheduleForm");
+
+            if (!form) {
+                showBookingMessage(
+                    "The rescheduling form was not found."
+                );
+                return;
+            }
+
+            form.hidden = false;
+
+            const dateInput =
+                $("customerRescheduleDate");
+
+            const timeInput =
+                $("customerRescheduleTime");
+
+            if (dateInput) {
+                dateInput.value = booking.date;
+                dateInput.min =
+                    formatDateKey(new Date());
+            }
+
+            if (timeInput) {
+                timeInput.value = booking.time;
+            }
+
+            showBookingMessage(
+                "Choose your preferred new date and time."
+            );
+        }
+    );
+
+    // -----------------------------------------------------
+    // 3. SUBMIT RESCHEDULING REQUEST
+    // -----------------------------------------------------
+
+    $("customerRescheduleForm")?.addEventListener(
+        "submit",
+        event => {
+            event.preventDefault();
+
+            const booking = getActiveSharedBooking();
+
+            if (!booking) {
+                showBookingMessage(
+                    "No active booking was selected."
+                );
+                return;
+            }
+
+            if (
+                typeof bookingStore?.rescheduleBooking !==
+                "function"
+            ) {
+                showBookingMessage(
+                    "Booking rescheduling is unavailable."
+                );
+                return;
+            }
+
+            const dateInput =
+                $("customerRescheduleDate");
+
+            const timeInput =
+                $("customerRescheduleTime");
+
+            if (!dateInput || !timeInput) {
+                showBookingMessage(
+                    "Rescheduling fields are missing."
+                );
+                return;
+            }
+
+            const newDate = dateInput.value;
+            const newTime = timeInput.value;
+
+            if (!newDate || !newTime) {
+                showBookingMessage(
+                    "Please choose a date and time."
+                );
+                return;
+            }
+
+            const result =
+                bookingStore.rescheduleBooking(
+                    booking.id,
+                    getCustomerEmail(),
+                    newDate,
+                    newTime
+                );
+
+            if (!result.success) {
+                showBookingMessage(
+                    result.message ||
+                    "Unable to reschedule the booking."
+                );
+                return;
+            }
+
+            refreshDashboard();
+            closeBookingModal();
+
+            alert(
+                result.message ||
+                "Rescheduling request submitted."
+            );
+        }
+    );
+
+    // =====================================================
+    // END BLOCK 26B BOOKING ACTION HANDLERS
+    // =====================================================
+
+
+
+    function closeBookingModal() {
+        const modal = $("customerBookingModal");
+
+        if (!modal) return;
+
+        if (
+            modal.tagName === "DIALOG" &&
+            modal.open
+        ) {
+            modal.close();
+        } else {
+            modal.hidden = true;
+        }
+
+        activeBookingId = null;
+    }
+
+    $("customerModalClose")?.addEventListener(
+        "click",
+        closeBookingModal
+    );
+
+    $("customerBookingModal")?.addEventListener(
+        "click",
+        event => {
+            if (
+                event.target ===
+                $("customerBookingModal")
+            ) {
+                closeBookingModal();
+            }
+        }
+    );
+
+    document.addEventListener(
+        "keydown",
+        event => {
+            if (
+                event.key === "Escape" &&
+                activeBookingId
+            ) {
+                closeBookingModal();
+            }
+        }
+    );
+
+    // -----------------------------------------------------
+    // 9. CALENDAR
+    // -----------------------------------------------------
+
+    function bookingsOnDate(date) {
+        return customerBookings.filter(
+            booking => booking.date === date
+        );
+    }
+
+    function renderCalendar(container, month, interactive) {
+        if (!container) return;
+
+        container.replaceChildren();
+
+        const year = month.getFullYear();
+        const monthIndex = month.getMonth();
+
+        const firstDay = new Date(
+            year,
+            monthIndex,
+            1
+        ).getDay();
+
+        const daysInMonth = new Date(
+            year,
+            monthIndex + 1,
+            0
+        ).getDate();
+
+        for (let i = 0; i < firstDay; i++) {
+            container.appendChild(
+                makeElement("span", "calendar-spacer")
+            );
+        }
+
+        for (
+            let day = 1;
+            day <= daysInMonth;
+            day++
+        ) {
+            const date = new Date(
+                year,
+                monthIndex,
+                day
+            );
+
+            const key = formatDateKey(date);
+
+            const button = makeElement(
+                "button",
+                "calendar-day",
+                day
+            );
+
+            button.type = "button";
+
+            if (key === formatDateKey(today)) {
+                button.classList.add("today");
+            }
+
+            if (bookingsOnDate(key).length > 0) {
+                button.classList.add("has-booking");
+            }
+
+            if (key === selectedDate && interactive) {
+                button.classList.add("selected");
+            }
+
+            if (interactive) {
+                button.setAttribute(
+                    "aria-label",
+                    key
+                );
+
+                button.addEventListener(
+                    "click",
+                    () => {
+                        selectedDate = key;
+
+                        renderFullCalendar();
+                        renderDateBookings();
+                    }
+                );
+            } else {
+                button.disabled = true;
+            }
+
+            container.appendChild(button);
+        }
+    }
+
+    function renderMiniCalendar() {
+        const currentMonth = new Date(
             today.getFullYear(),
             today.getMonth(),
             1
-        ),
-        false
-    );
-}
+        );
 
-// =====================================================
-// 11. CALENDAR NAVIGATION
-// =====================================================
+        renderCalendar(
+            $("customerMiniCalendar"),
+            currentMonth,
+            false
+        );
 
-getElement("prevMonth")?.addEventListener(
-    "click",
-    () => {
+        setText(
+            "customerMiniMonth",
+            new Intl.DateTimeFormat("en-KE", {
+                month: "long",
+                year: "numeric"
+            }).format(currentMonth)
+        );
+    }
+
+    function renderFullCalendar() {
+        renderCalendar(
+            $("customerFullCalendar"),
+            displayedMonth,
+            true
+        );
+
+        setText(
+            "customerCalendarMonth",
+            new Intl.DateTimeFormat("en-KE", {
+                month: "long",
+                year: "numeric"
+            }).format(displayedMonth)
+        );
+    }
+
+    function renderDateBookings() {
+        const container =
+            $("customerDateBookings");
+
+        if (!container) return;
+
+        const date = new Date(
+            `${selectedDate}T12:00:00`
+        );
+
+        setText(
+            "customerSelectedDateLabel",
+            new Intl.DateTimeFormat("en-KE", {
+                dateStyle: "full"
+            }).format(date)
+        );
+
+        renderBookingList(
+            container,
+            bookingsOnDate(selectedDate)
+        );
+    }
+
+    function changeCalendarMonth(amount) {
         displayedMonth = new Date(
             displayedMonth.getFullYear(),
-            displayedMonth.getMonth() - 1,
+            displayedMonth.getMonth() + amount,
             1
         );
 
         renderFullCalendar();
     }
-);
 
-getElement("nextMonth")?.addEventListener(
-    "click",
-    () => {
-        displayedMonth = new Date(
-            displayedMonth.getFullYear(),
-            displayedMonth.getMonth() + 1,
-            1
-        );
-
-        renderFullCalendar();
-    }
-);
-
-// =====================================================
-// 12. MARK AVAILABLE / UNAVAILABLE
-// =====================================================
-
-getElement("markUnavailable")?.addEventListener(
-    "click",
-    () => {
-        if (selectedDate < dateKey(new Date())) {
-            setText(
-                "scheduleMessage",
-                "Past dates cannot be changed."
-            );
-
-            return;
-        }
-
-        if (hasConfirmedJob(selectedDate)) {
-            setText(
-                "scheduleMessage",
-                "This date contains a confirmed sample job."
-            );
-
-            return;
-        }
-
-        unavailableDates.add(
-            selectedDate
-        );
-
-        setText(
-            "scheduleMessage",
-            "Date marked unavailable in this preview."
-        );
-
-        renderFullCalendar();
-        renderMiniCalendar();
-    }
-);
-
-getElement("markAvailable")?.addEventListener(
-    "click",
-    () => {
-        if (selectedDate < dateKey(new Date())) {
-            setText(
-                "scheduleMessage",
-                "Past dates cannot be changed."
-            );
-
-            return;
-        }
-
-        unavailableDates.delete(
-            selectedDate
-        );
-
-        setText(
-            "scheduleMessage",
-            "Date marked available in this preview."
-        );
-
-        renderFullCalendar();
-        renderMiniCalendar();
-    }
-);
-
-// =====================================================
-// 13. SERVICE MANAGEMENT
-// =====================================================
-
-const myServicesList = getElement(
-    "myServicesList"
-);
-
-const addServiceForm = getElement(
-    "addServiceForm"
-);
-
-const serviceMessage = getElement(
-    "serviceMessage"
-);
-
-function showServiceMessage(message) {
-    if (serviceMessage) {
-        serviceMessage.textContent = message;
-    }
-}
-
-function renderServices() {
-    if (!myServicesList) return;
-
-    myServicesList.replaceChildren();
-
-    if (myServices.length === 0) {
-        const empty = document.createElement(
-            "p"
-        );
-
-        empty.textContent =
-            "No services added yet. Choose a service to begin.";
-
-        myServicesList.appendChild(
-            empty
-        );
-
-        return;
-    }
-
-    myServices.forEach(service => {
-        const card = document.createElement(
-            "div"
-        );
-
-        card.className = "managed-service";
-
-        const details = document.createElement(
-            "div"
-        );
-
-        const name = document.createElement(
-            "strong"
-        );
-
-        name.textContent =
-            serviceNames[service.id] ||
-            service.id;
-
-        const priceLabel = document.createElement(
-            "small"
-        );
-
-        priceLabel.textContent =
-            service.id === "laundry"
-                ? "Rate per standard item (KSh)"
-                : "Starting service rate (KSh)";
-
-        const priceInput = document.createElement(
-            "input"
-        );
-
-        priceInput.type = "number";
-        priceInput.min = "1";
-        priceInput.max = "10000000";
-        priceInput.step = "1";
-        priceInput.value = service.price;
-
-        priceInput.className =
-            "managed-service-price-input";
-
-        priceInput.setAttribute(
-            "aria-label",
-            `Price for ${serviceNames[service.id]}`
-        );
-
-        details.append(
-            name,
-            priceLabel,
-            priceInput
-        );
-
-        const saveButton = document.createElement(
-            "button"
-        );
-
-        saveButton.type = "button";
-        saveButton.textContent = "Save Price";
-
-        saveButton.addEventListener(
+    [
+        ["customerPrevMonth", -1],
+        ["customerNextMonth", 1],
+        ["customerPrevCalendarMonth", -1],
+        ["customerNextCalendarMonth", 1]
+    ].forEach(([id, amount]) => {
+        $(id)?.addEventListener(
             "click",
-            () => {
-                const newPrice = Number(
-                    priceInput.value
-                );
-
-                if (
-                    !priceInput.value ||
-                    !Number.isSafeInteger(newPrice) ||
-                    newPrice < 1 ||
-                    newPrice > 10000000
-                ) {
-                    showServiceMessage(
-                        "Enter a valid whole-number price."
-                    );
-
-                    return;
-                }
-
-                service.price = newPrice;
-
-                const saved = saveWorkerDraft();
-
-                showServiceMessage(
-                    workerDraft
-                        ? saved
-                            ? "Service price saved to your local draft."
-                            : "Could not save the updated price."
-                        : "Price updated in this demonstration session."
-                );
-            }
-        );
-
-        const removeButton = document.createElement(
-            "button"
-        );
-
-        removeButton.type = "button";
-        removeButton.textContent = "Remove";
-
-        removeButton.addEventListener(
-            "click",
-            () => {
-                myServices = myServices.filter(
-                    item => item.id !== service.id
-                );
-
-                const saved = saveWorkerDraft();
-
-                showServiceMessage(
-                    workerDraft
-                        ? saved
-                            ? "Service removed from your local draft."
-                            : "Service removed here, but saving failed."
-                        : "Service removed from this preview."
-                );
-
-                renderServices();
-            }
-        );
-
-        card.append(
-            details,
-            saveButton,
-            removeButton
-        );
-
-        myServicesList.appendChild(
-            card
+            () => changeCalendarMonth(amount)
         );
     });
-}
 
-if (addServiceForm) {
-    addServiceForm.addEventListener(
-        "submit",
-        event => {
-            event.preventDefault();
+    // -----------------------------------------------------
+    // 10. SAVED CLEANERS
+    // -----------------------------------------------------
 
-            const serviceId = getElement(
-                "newService"
-            ).value;
+    function loadSavedCleaners() {
+        const saved = readJSON(
+            SAVED_STORAGE_KEY,
+            []
+        );
 
-            const priceField = getElement(
-                "servicePrice"
-            );
+        savedCleaners = Array.isArray(saved)
+            ? saved
+            : [];
+    }
 
-            const price = Number(
-                priceField.value
-            );
+    function renderSavedCleaners() {
+        const container =
+            $("customerSavedCleaners");
 
-            if (!serviceNames[serviceId]) {
-                showServiceMessage(
-                    "Please select a valid service."
-                );
+        if (!container) return;
 
-                return;
-            }
+        container.replaceChildren();
 
-            if (
-                !priceField.value ||
-                !Number.isSafeInteger(price) ||
-                price < 1 ||
-                price > 10000000
-            ) {
-                showServiceMessage(
-                    "Enter a valid whole-number starting price."
-                );
-
-                return;
-            }
-
-            if (
-                myServices.some(
-                    item => item.id === serviceId
+        if (savedCleaners.length === 0) {
+            container.appendChild(
+                makeElement(
+                    "p",
+                    "customer-empty-state",
+                    "You have not saved any cleaners yet."
                 )
-            ) {
-                showServiceMessage(
-                    "This service is already in your list."
-                );
-
-                return;
-            }
-
-            myServices.push({
-                id: serviceId,
-                price
-            });
-
-            const saved = saveWorkerDraft();
-
-            addServiceForm.reset();
-
-            showServiceMessage(
-                workerDraft
-                    ? saved
-                        ? "Service added and saved to your local draft."
-                        : "Service added here, but saving failed."
-                    : "Service added to this demonstration session."
             );
 
-            renderServices();
+            return;
         }
+
+        savedCleaners.forEach(cleaner => {
+            const card = makeElement(
+                "article",
+                "customer-saved-cleaner"
+            );
+
+            const name = makeElement(
+                "h3",
+                "",
+                cleaner.name ||
+                    "Cleaning Professional"
+            );
+
+            const location = makeElement(
+                "p",
+                "",
+                cleaner.location ||
+                    "Location not specified"
+            );
+
+            const view = makeElement(
+                "a",
+                "customer-view-cleaner",
+                "View Profile"
+            );
+
+            view.href =
+                `cleaner-profile.html?id=` +
+                encodeURIComponent(cleaner.id);
+
+            const remove = makeElement(
+                "button",
+                "customer-remove-cleaner",
+                "Remove"
+            );
+
+            remove.type = "button";
+
+            remove.addEventListener(
+                "click",
+                () => {
+                    savedCleaners =
+                        savedCleaners.filter(
+                            item =>
+                                String(item.id) !==
+                                String(cleaner.id)
+                        );
+
+                    writeJSON(
+                        SAVED_STORAGE_KEY,
+                        savedCleaners
+                    );
+
+                    renderSavedCleaners();
+                    updateStatistics();
+                }
+            );
+
+            card.append(
+                name,
+                location,
+                view,
+                remove
+            );
+
+            container.appendChild(card);
+        });
+    }
+
+    // -----------------------------------------------------
+    // 11. DASHBOARD REFRESH
+    // -----------------------------------------------------
+
+    function refreshDashboard() {
+        loadCustomerBookings();
+
+        renderBookings();
+        updateStatistics();
+
+        renderMiniCalendar();
+        renderFullCalendar();
+        renderDateBookings();
+    }
+
+    window.addEventListener(
+        "safi:bookings-updated",
+        refreshDashboard
     );
-}
 
-// =====================================================
-// 14. PROFESSIONAL PROFILE EDITING
-// =====================================================
-
-const cleanerProfileForm = getElement(
-    "cleanerProfileForm"
-);
-
-if (cleanerProfileForm) {
-    cleanerProfileForm.addEventListener(
-        "submit",
+    window.addEventListener(
+        "storage",
         event => {
-            event.preventDefault();
-
-            if (!cleanerProfileForm.reportValidity()) {
-                return;
-            }
-
-            const name = getElement(
-                "profileName"
-            ).value.trim();
-
-            const location = getElement(
-                "profileLocation"
-            ).value.trim();
-
-            const bio = getElement(
-                "profileBio"
-            ).value.trim();
-
             if (
-                !name ||
-                !location ||
-                !bio
+                [
+                    BOOKING_STORAGE_KEY,
+                    PROFILE_STORAGE_KEY,
+                    SAVED_STORAGE_KEY,
+                    "safiBookingPreviews"
+                ].includes(event.key)
             ) {
-                setText(
-                    "profileMessage",
-                    "Please complete all profile fields."
-                );
+                if (
+                    event.key === PROFILE_STORAGE_KEY
+                ) {
+                    loadCustomerProfile();
+                }
 
-                return;
-            }
+                if (
+                    event.key === SAVED_STORAGE_KEY
+                ) {
+                    loadSavedCleaners();
+                    renderSavedCleaners();
+                }
 
-            if (!workerDraft) {
-                setText(
-                    "profileMessage",
-                    "Profile validated. Register as a professional first to save a local draft."
-                );
-
-                return;
-            }
-
-            workerDraft.name = name;
-            workerDraft.location = location;
-            workerDraft.bio = bio;
-
-            const saved = saveWorkerDraft();
-
-            if (saved) {
-                refreshWorkerIdentity();
-
-                setText(
-                    "profileMessage",
-                    "Profile changes saved locally. Your profile is not yet published."
-                );
-            } else {
-                setText(
-                    "profileMessage",
-                    "Unable to save profile changes in this browser."
-                );
+                refreshDashboard();
             }
         }
     );
-}
 
-// =====================================================
-// 15. INITIALIZE DASHBOARD
-// =====================================================
-
-function initializeCleanerDashboard() {
-    if (selectedDateLabel) {
-        selectedDateLabel.textContent =
-            new Intl.DateTimeFormat(
-                "en-KE",
-                { dateStyle: "full" }
-            ).format(today);
-    }
-
-    refreshWorkerIdentity();
-
-    renderRequests();
-    updateStatistics();
-
-    renderMiniCalendar();
-    renderFullCalendar();
-
-    renderServices();
-
-    // Optional direct navigation:
-    // cleaner-dashboard.html?page=services
-    const params = new URLSearchParams(
-        window.location.search
+    window.addEventListener(
+        "focus",
+        refreshDashboard
     );
 
-    const requestedPage = params.get("page");
+    // -----------------------------------------------------
+    // 12. INITIALIZATION
+    // -----------------------------------------------------
 
-    if (
-        requestedPage &&
-        getElement(`page-${requestedPage}`)
-    ) {
-        showPage(requestedPage);
+    function initializeCustomerDashboard() {
+        loadCustomerProfile();
+        loadSavedCleaners();
+
+        updateCustomerIdentity();
+        renderSavedCleaners();
+
+        refreshDashboard();
+
+        const requestedPage =
+            new URLSearchParams(
+                window.location.search
+            ).get("page");
+
+        if (requestedPage) {
+            showPage(requestedPage);
+        }
+
+        if (window.location.hash === "#bookings") {
+            showPage("bookings");
+        }
     }
-}
 
-initializeCleanerDashboard();
-refreshSharedRequests();
+    initializeCustomerDashboard();
+
+})();

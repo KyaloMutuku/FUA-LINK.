@@ -2,16 +2,16 @@
 "use strict";
 
 /* ==========================================
-   FUA LINK — ALL CLEANERS DIRECTORY
+   SAFI LINK — ALL CLEANERS DIRECTORY
    ========================================== */
 
 const directoryCleaners =
-    Array.isArray(window.FUA_CLEANERS)
-        ? window.FUA_CLEANERS
+    Array.isArray(window.SAFI_CLEANERS)
+        ? window.SAFI_CLEANERS
         : [];
 
 const directoryServices =
-    window.FUA_SERVICES || {};
+    window.SAFI_SERVICES || {};
 
 const directoryGrid =
     document.getElementById("allCleanersGrid");

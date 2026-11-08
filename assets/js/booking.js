@@ -2,7 +2,7 @@
 "use strict";
 
 /* ==========================================
-   FUA LINK — BLOCK 9
+   SAFI LINK — BLOCK 9
    ADVANCED BOOKING EXPERIENCE
 
    FRONTEND DEMONSTRATION ONLY
@@ -617,16 +617,23 @@ function updateServiceRequirements() {
     requirementGroups.forEach(group => {
         const type = group.dataset.requirement;
 
-        if (type === "intensive") {
-            group.hidden =
-                !selectedService ||
-                selectedService === "deep";
-        } else {
-            group.hidden = type !== selectedService;
-        }
+        const visible = type === "intensive"
+            ? Boolean(selectedService && selectedService !== "deep")
+            : type === selectedService;
+
+        group.hidden = !visible;
+
+        group.querySelectorAll("input, select, textarea")
+            .forEach(field => {
+                field.disabled = !visible;
+            });
     });
 
-    // Keep the Deep Cleaning estimate synchronized.
+    // Deep Cleaning may be inside a data-requirement group.
+    // Do not override visibility when a parent group is hidden.
+    const deepPanel = document.querySelector(".deep-customization");
+
+
     if (selectedService === "deep") {
         updateDeepEstimate();
     }
@@ -734,8 +741,8 @@ requirementsPanel?.addEventListener("change", updateSummary);
             params.get("cleaner") || params.get("id");
 
         const cleanerList = Array.isArray(
-            window.FUA_CLEANERS
-        ) ? window.FUA_CLEANERS : [];
+            window.SAFI_CLEANERS
+        ) ? window.SAFI_CLEANERS : [];
 
         selectedCleaner = cleanerList.find(
             cleaner =>
@@ -896,16 +903,23 @@ function calculatePrice() {
     let base = rate;
 
     switch (selectedService) {
-        case "laundry": {
-            const clothes = numberValue("laundryItems", 10, 1, 500);
-            const bedding = numberValue("laundryBedding", 0, 0, 50);
-            const ironing = value("laundryIroning", "no") === "yes";
+        
+case "laundry": {
+    const clothes = numberValue("laundryItems", 10, 1, 500);
+    const bedding = numberValue("laundryBedding", 0, 0, 50);
+    const ironing = value("laundryIroning", "no") === "yes";
 
-            base = clothes * rate
-                + bedding * rate * 3
-                + (ironing ? clothes * rate * 0.4 : 0);
-            break;
-        }
+    // Demo rate: basic bundle of 10 clothing items.
+    const perItemRate = rate / 10;
+
+    base =
+        clothes * perItemRate +
+        bedding * perItemRate * 3 +
+        (ironing ? clothes * perItemRate * 0.4 : 0);
+
+    break;
+}
+
 
         case "vehicle": {
             const vehicleFactor = {
@@ -973,65 +987,49 @@ function calculatePrice() {
 }
 
 
-    function updateSummary() {
-        const size =
-            document.getElementById("propertySize").value;
+    
+function updateSummary() {
+    const size =
+        document.getElementById("propertySize")?.value || "small";
 
-        const frequency =
-            document.getElementById(
-                "cleaningFrequency"
-            ).value;
+    const frequency =
+        document.getElementById("cleaningFrequency")?.value || "once";
 
-        const price = calculatePrice();
+    const price = calculatePrice();
 
-        setText(
-            "summaryService",
-            selectedService
-                ? services[selectedService].name
-                : "Not selected"
-        );
+    setText(
+        "summaryService",
+        selectedService
+            ? services[selectedService]?.name || "Not selected"
+            : "Not selected"
+    );
 
-        setText(
-            "summarySize",
-            sizeLabels[size] || size
-        );
+    setText("summarySize", sizeLabels[size] || size);
 
-        setText(
-            "summaryFrequency",
-            frequencyLabels[frequency] || frequency
-        );
+    setText(
+        "summaryFrequency",
+        frequencyLabels[frequency] || frequency
+    );
 
-        setText(
-            "summaryDate",
-            formatDate(bookingDate.value)
-        );
+    setText(
+        "summaryDate",
+        formatDate(bookingDate?.value || "")
+    );
 
-        setText(
-            "summaryTime",
-            formatTime(selectedTime)
-        );
+    setText("summaryTime", formatTime(selectedTime));
 
-        setText(
-            "summaryBasePrice",
-            formatMoney(price.base)
-        );
+    setText("summaryBasePrice", formatMoney(price.base));
 
-        setText(
-            "summaryAdjustment",
-            formatMoney(price.adjustment)
-        );
+    setText("summaryAdjustment", formatMoney(price.adjustment));
 
-        setText(
-            "summaryTotal",
-            formatMoney(price.total)
-        );
+    setText("summaryTotal", formatMoney(price.total));
+
+    if (selectedService === "deep") {
+        updateDeepEstimate();
     }
+}
 
-    document.getElementById("propertySize")
-        .addEventListener("change", updateSummary);
 
-    document.getElementById("cleaningFrequency")
-        .addEventListener("change", updateSummary);
 
     bookingDate.addEventListener("change", () => {
         updateSummary();
@@ -1143,52 +1141,17 @@ function calculatePrice() {
     function validateStep(step) {
         clearErrors();
 
-       
-if (step === 1) {
-    if (!selectedService) {
-        showError(
-            "serviceError",
-            "Please select a cleaning service."
-        );
+        if (step === 1) {
+            if (!selectedService) {
+                showError(
+                    "serviceError",
+                    "Please select a cleaning service."
+                );
+                return false;
+            }
 
-        return false;
-    }
-
-    if (selectedService === "deep") {
-        const deepDetails = getDeepCleaningSelections();
-
-        if (deepDetails.tasks.length === 0) {
-            showError(
-                "serviceError",
-                "Select at least one Deep Cleaning task."
-            );
-
-            document.getElementById(
-                "deepTasksContainer"
-            )?.scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-            });
-
-            return false;
+            return true;
         }
-
-        if (
-            !Number.isFinite(deepDetails.area) ||
-            deepDetails.area <= 0
-        ) {
-            showError(
-                "serviceError",
-                "Enter a valid cleaning area."
-            );
-
-            return false;
-        }
-    }
-
-    return true;
-}
-
 
         if (step === 2) {
             if (!bookingDate.value) {
@@ -1417,46 +1380,6 @@ if (step === 1) {
             ["Estimated Total", details.total]
         ];
 
-        
-// BLOCK 21 — INCLUDE DEEP CLEANING SPECIFICATIONS
-
-if (selectedService === "deep") {
-    const deep = getDeepCleaningSelections();
-
-    const sectorNames = {
-        residential: "Residential",
-        office: "Office & Corporate",
-        commercial: "Commercial & Retail",
-        hospitality: "Restaurant & Hospitality",
-        vehicle: "Vehicle Detailing",
-        outdoor: "Outdoor & Compound"
-    };
-
-    rows.splice(2, 0,
-        [
-            "Deep Cleaning Sector",
-            sectorNames[deep.sector] || deep.sector
-        ],
-        [
-            "Selected Cleaning Tasks",
-            deep.tasks.join(", ") || "None"
-        ],
-        [
-            "Special Requirements",
-            deep.extras.join(", ") || "None"
-        ],
-        [
-            "Cleaning Condition",
-            deep.condition
-        ],
-        [
-            "Deep Cleaning Instructions",
-            deep.notes || "None"
-        ]
-    );
-}
-
-
         rows.forEach(([label, value]) => {
             container.appendChild(
                 createReviewRow(label, value)
@@ -1509,7 +1432,7 @@ instructions: document.getElementById(
 ).value.trim(),
 
 
-            id: `FUA-${Date.now()}`,
+            id: `SAFI-${Date.now()}`,
             cleanerId: selectedCleaner
                 ? selectedCleaner.id
                 : null,
@@ -1563,7 +1486,7 @@ deepCleaning: selectedService === "deep"
 
         try {
             const existing = JSON.parse(
-                localStorage.getItem("fuaBookingPreviews")
+                localStorage.getItem("safiBookingPreviews")
                 || "[]"
             );
 
@@ -1574,7 +1497,7 @@ deepCleaning: selectedService === "deep"
             previews.unshift(localBooking);
 
             localStorage.setItem(
-                "fuaBookingPreviews",
+                "safiBookingPreviews",
                 JSON.stringify(previews)
             );
         } catch (error) {
@@ -1585,24 +1508,50 @@ deepCleaning: selectedService === "deep"
         }
         // BLOCK 20 — CREATE SHARED DEMO BOOKING REQUEST
 
-const sharedResult =
-    window.FUA_BOOKING_STORE?.createBooking({
+
+const bookingStore = window.SAFI_BOOKING_STORE;
+
+if (!bookingStore ||
+    typeof bookingStore.createBooking !== "function") {
+
+    previewCompleted = false;
+
+    showError(
+        "reviewError",
+        "Booking storage is unavailable. Please refresh and try again."
+    );
+
+    return;
+}
+
+let sharedResult;
+
+try {
+    sharedResult = bookingStore.createBooking({
         ...localBooking,
-        id: localBooking.id,
         status: "pending"
     });
+} catch (error) {
+    console.error("Booking storage error:", error);
+}
 
 if (!sharedResult?.success) {
-    console.warn(
-        "Shared booking was not created:",
-        sharedResult?.message
+    previewCompleted = false;
+
+    showError(
+        "reviewError",
+        sharedResult?.message ||
+        "Your booking could not be saved. Please try again."
     );
-} else {
-    console.log(
-        "Shared demonstration booking created:",
-        sharedResult.booking
-    );
+
+    return;
 }
+
+console.log(
+    "SAFI LINK demo booking saved:",
+    sharedResult.booking
+);
+
 
         bookingForm.hidden = true;
         bookingSuccess.hidden = false;
@@ -1619,6 +1568,40 @@ if (!sharedResult?.success) {
         });
     });
 
+    
+// ==========================================
+// BLOCK 22 — LIVE BOOKING PRICE UPDATES
+// ==========================================
+
+const bookingPriceFields = [
+    "propertySize",
+    "cleaningFrequency",
+    "laundryItems",
+    "laundryBedding",
+    "laundryIroning",
+    "vehicleType",
+    "vehiclePackage",
+    "officeArea",
+    "officeEquipment",
+    "gardenTask",
+    "gardenArea",
+    "intensiveCleaning",
+    "deepArea",
+    "deepRooms",
+    "deepFloors",
+    "deepCondition"
+];
+
+bookingPriceFields.forEach(id => {
+    const field = document.getElementById(id);
+
+    if (!field) return;
+
+    field.addEventListener("input", updateSummary);
+    field.addEventListener("change", updateSummary);
+});
+
+
     // --------------------------------------
     // 12. INITIALIZE BOOKING PAGE
     // --------------------------------------
@@ -1628,57 +1611,56 @@ if (!sharedResult?.success) {
     // BLOCK 11 — PROFILE TO BOOKING INTEGRATION
     // ==========================================
 
-    loadCleaner();
+    
+// Load cleaner information first.
+loadCleaner();
 
-    // Read the selected service from the URL.
-    const bookingParams = new URLSearchParams(
-        window.location.search
-    );
+// Read selected service from the URL.
+const bookingParams = new URLSearchParams(
+    window.location.search
+);
 
-    const requestedService =
-        bookingParams.get("service");
+const requestedService = bookingParams.get("service");
 
-    // Only preselect services offered by this cleaner.
-    const allowedServices = selectedCleaner &&
-        Array.isArray(selectedCleaner.services)
-            ? selectedCleaner.services
-            : Object.keys(services);
+// Only allow services offered by this cleaner.
+const allowedServices =
+    selectedCleaner &&
+    Array.isArray(selectedCleaner.services)
+        ? selectedCleaner.services
+        : Object.keys(services);
 
-    if (
-        requestedService &&
-        services[requestedService] &&
-        allowedServices.includes(requestedService)
-    ) {
-        selectedService = requestedService;
-    }
+if (
+    requestedService &&
+    services[requestedService] &&
+    allowedServices.includes(requestedService)
+) {
+    selectedService = requestedService;
+}
 
-    // BLOCK 21 — INITIALIZE DEEP CLEANING SAFELY
-
+// Initialize service cards and Deep Cleaning tasks.
 renderServices();
 renderDeepCleaningTasks();
 updateServiceRequirements();
 
-    // Highlight the preselected service.
-    if (selectedService) {
-        const selectedButton = Array.from(
-            document.querySelectorAll(
-                ".booking-service-option"
-            )
-        ).find(button =>
-            button.dataset.service === selectedService
-        );
+// Highlight any service preselected from the profile.
+if (selectedService) {
+    const selectedButton = Array.from(
+        document.querySelectorAll(".booking-service-option")
+    ).find(button =>
+        button.dataset.service === selectedService
+    );
 
-        if (selectedButton) {
-            selectedButton.classList.add("selected");
-            selectedButton.setAttribute(
-                "aria-pressed",
-                "true"
-            );
-        }
+    if (selectedButton) {
+        selectedButton.classList.add("selected");
+        selectedButton.setAttribute("aria-pressed", "true");
     }
+}
 
-    updateSummary();
-    showStep(1);
+// Initialize pricing and booking navigation.
+updateSummary();
+showStep(1);
 
+
+  
 
 });

@@ -4,7 +4,7 @@ Date: 21 October 2026
 Status: Awaiting local testing
 
 ### Objective
-Develop a responsive premium homepage for FUA LINK.
+Develop a responsive premium homepage for SAFI LINK.
 
 ### Implemented
 - Navy, mint and sage visual design system
@@ -40,7 +40,7 @@ Develop a responsive premium homepage for FUA LINK.
 ### Next Block
 - Advanced scroll animations using GSAP
 - Interactive service cards
-- Animated Why FUA LINK section
+- Animated Why SAFI LINK section
 - Professional cleaner discovery section
 
 ## Block 2 — Advanced Frontend Animations
@@ -73,7 +73,7 @@ Status: Awaiting testing
 
 ### Next Block
 Design and implement the complete
-"Why Choose FUA LINK?" experience
+"Why Choose SAFI LINK?" experience
 with animated benefits, service previews,
 and cleaner discovery components.
 ## Block 2 — Animation Testing Results
@@ -92,7 +92,7 @@ All five animation tests passed.
 
 Next:
 Block 3 — Popular Cleaning Services
-and Why Choose FUA LINK sections.
+and Why Choose SAFI LINK sections.
 ## Block 3 — Requirements Update
 Date: 26 October 2026
 
@@ -201,7 +201,7 @@ to a separate developer.
 - Password show/hide controls
 - Accessible form feedback messages
 - Frontend placeholders for password recovery
-- Reusable visual styles consistent with FUA LINK
+- Reusable visual styles consistent with SAFI LINK
 
 ### Integration Requirements
 The backend developer will provide:
@@ -249,7 +249,7 @@ All displayed booking records are demonstration data.
 No authentication, booking retrieval, or profile updates
 are performed by this frontend implementation.
 
-FUA LINK — CUSTOMER DASHBOARD REDESIGN (FRONTEND ONLY)
+SAFI LINK — CUSTOMER DASHBOARD REDESIGN (FRONTEND ONLY)
 
 Copy these 3 files into your existing FUA-LINK project, replacing the earlier Block 7 versions:
   customer-dashboard.html
@@ -276,7 +276,7 @@ Append to documentation/development-log.md:
 - Retained booking filters and editable account-form preview.
 - All records are sample-only; server integration belongs to backend developer.
 
-FUA LINK — BLOCK 8 CLEANER DASHBOARD (FRONTEND ONLY)
+SAFI LINK — BLOCK 8 CLEANER DASHBOARD (FRONTEND ONLY)
 
 INSTALLATION
 1. Extract this archive.

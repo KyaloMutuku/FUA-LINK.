@@ -2,12 +2,12 @@
 "use strict";
 
 /* ==========================================
-   FUA LINK — BLOCK 15
+   SAFI LINK — BLOCK 15
    PROFESSIONAL CLEANER PROFILE
    ========================================== */
 
-const cleaners = window.FUA_CLEANERS || [];
-const services = window.FUA_SERVICES || {};
+const cleaners = window.SAFI_CLEANERS || [];
+const services = window.SAFI_SERVICES || {};
 
 const params = new URLSearchParams(
     window.location.search
@@ -73,7 +73,7 @@ if (!cleaner) {
         layout.hidden = false;
     }
 
-    document.title = `${cleaner.name} | FUA LINK`;
+    document.title = `${cleaner.name} | SAFI LINK`;
 
     setProfileText("cleanerName", cleaner.name);
 

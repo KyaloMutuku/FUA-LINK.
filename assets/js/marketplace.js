@@ -2,15 +2,15 @@
 "use strict";
 
 /* ==========================================
-   FUA LINK — BLOCK 15
+   SAFI LINK — BLOCK 15
    PROFESSIONAL MARKETPLACE
    ========================================== */
 
-const cleaners = Array.isArray(window.FUA_CLEANERS)
-    ? window.FUA_CLEANERS
+const cleaners = Array.isArray(window.SAFI_CLEANERS)
+    ? window.SAFI_CLEANERS
     : [];
 
-const serviceNames = window.FUA_SERVICES || {};
+const serviceNames = window.SAFI_SERVICES || {};
 
 const statusNames = {
     available: "Available",

@@ -81,7 +81,7 @@ searchForm.addEventListener("submit", event => {
 
 
 /* =========================================
-   FUA LINK — ANIMATION ENGINE
+   SAFI LINK — ANIMATION ENGINE
    BLOCK 2
 ========================================= */
 
@@ -296,7 +296,7 @@ function initializeBlock3() {
 
     });
 
-    // Animate the Why FUA LINK section.
+    // Animate the Why SAFI LINK section.
 
     gsap.from(".why-visual", {
         scrollTrigger: {

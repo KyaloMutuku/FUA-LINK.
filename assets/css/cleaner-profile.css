@@ -361,7 +361,7 @@ body {
 }
 
 /* Reusable glass panels for booking and profiles */
-.fua-glass-panel {
+.safi-glass-panel {
     background: rgba(255, 255, 255, 0.88);
     border: 1px solid rgba(255, 255, 255, 0.85);
     border-radius: 22px;

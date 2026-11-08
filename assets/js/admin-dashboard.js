@@ -2,12 +2,12 @@
 "use strict";
 
 /* ==========================================
-   FUA LINK — BLOCK 19
+   SAFI LINK — BLOCK 19
    ADMIN VERIFICATION DEMONSTRATION
    ========================================== */
 
-const DRAFT_KEY = "fuaWorkerOnboardingDraft";
-const DECISIONS_KEY = "fuaAdminDemoDecisions";
+const DRAFT_KEY = "safiWorkerOnboardingDraft";
+const DECISIONS_KEY = "safiAdminDemoDecisions";
 
 const services = {
     home: "Home Cleaning",

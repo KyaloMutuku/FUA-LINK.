@@ -1,7 +1,7 @@
 
 "use strict";
 
-/* FUA LINK — BLOCK 6 FRONTEND AUTH LOGIC */
+/* SAFI LINK — BLOCK 6 FRONTEND AUTH LOGIC */
 
 const authMessage = document.getElementById("authMessage");
 
@@ -159,7 +159,7 @@ if (accountType === "cleaner") {
 
     try {
         localStorage.setItem(
-            "fuaWorkerOnboardingDraft",
+            "safiWorkerOnboardingDraft",
             JSON.stringify(draft)
         );
 
@@ -188,7 +188,7 @@ showMessage(
 }
 
 /* ==========================================
-   FUA LINK — BLOCK 16
+   SAFI LINK — BLOCK 16
    PROFESSIONAL REGISTRATION FIELDS
    ========================================== */
 

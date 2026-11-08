@@ -2,7 +2,7 @@
 "use strict";
 
 /* =====================================================
-   FUA LINK — BLOCK 14
+   SAFI LINK — BLOCK 14
    PROFESSIONAL CLEANER DIRECTORY
 
    35 FICTIONAL WORKER PROFILES
@@ -13,7 +13,7 @@
    Replace with verified backend/API data later.
    ===================================================== */
 
-window.FUA_SERVICES = {
+window.SAFI_SERVICES = {
     home: "Home Cleaning",
     office: "Office Cleaning",
     deep: "Deep Cleaning",
@@ -38,7 +38,7 @@ window.FUA_SERVICES = {
    are fictional demonstration data.
 */
 
-const FUA_WORKER_RECORDS = [
+const SAFI_WORKER_RECORDS = [
 
     // ==========================================
     // HOME CLEANING SPECIALISTS
@@ -558,7 +558,7 @@ const FUA_WORKER_RECORDS = [
 // BUILD COMPATIBLE WORKER PROFILES
 // ==========================================
 
-window.FUA_CLEANERS = FUA_WORKER_RECORDS.map(worker => {
+window.SAFI_CLEANERS = SAFI_WORKER_RECORDS.map(worker => {
 
     const primaryService = worker.services[0];
 
@@ -589,14 +589,14 @@ window.FUA_CLEANERS = FUA_WORKER_RECORDS.map(worker => {
 // ==========================================
 
 // Find a worker by ID.
-window.FUA_getCleanerById = function (id) {
-    return window.FUA_CLEANERS.find(
+window.SAFI_getCleanerById = function (id) {
+    return window.SAFI_CLEANERS.find(
         worker => String(worker.id) === String(id)
     ) || null;
 };
 
 // Get a worker's price for a selected service.
-window.FUA_getServicePrice = function (worker, serviceId) {
+window.SAFI_getServicePrice = function (worker, serviceId) {
     if (!worker || !worker.services.includes(serviceId)) {
         return null;
     }
@@ -609,8 +609,8 @@ window.FUA_getServicePrice = function (worker, serviceId) {
 };
 
 // Get all workers offering a specific service.
-window.FUA_getCleanersByService = function (serviceId) {
-    return window.FUA_CLEANERS.filter(
+window.SAFI_getCleanersByService = function (serviceId) {
+    return window.SAFI_CLEANERS.filter(
         worker => worker.services.includes(serviceId)
     );
 };
@@ -620,7 +620,7 @@ window.FUA_getCleanersByService = function (serviceId) {
 // ==========================================
 
 console.log(
-    "FUA LINK: Loaded",
-    window.FUA_CLEANERS.length,
+    "SAFI LINK: Loaded",
+    window.SAFI_CLEANERS.length,
     "fictional professional profiles."
 );
